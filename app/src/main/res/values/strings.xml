@@ -1,3 +1,9 @@
 <resources>
-    <string name="app_name">PrezzApp</string>
+    <string name="app_name">prezzapp</string>
+    <string name="prezzapp">PrezzApp</string>
+    <string name="email">Email</string>
+    <string name="prenom_nom_uha_fr">prenom.nom@uha.fr</string>
+    <string name="mot_de_passe">Mot de passe</string>
+    <string name="se_connecter">Se connecter</string>
+    <string name="mot_de_passe_oubli">Mot de passe oublié ?</string>
 </resources>

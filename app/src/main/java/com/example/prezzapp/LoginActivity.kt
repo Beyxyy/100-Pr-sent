@@ -1,20 +1,39 @@
 package com.example.prezzapp
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import android.widget.Button
+import android.widget.EditText
+import android.widget.Toast
 
-class LoginActivity : AppCompatActivity() {
+class LoginActivity : Activity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContentView(R.layout.activity_login)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
+
+        val emailInput = findViewById<EditText>(R.id.editTextEmail)
+        val passwordInput = findViewById<EditText>(R.id.editTextPassword)
+        val loginButton = findViewById<Button>(R.id.buttonLogin)
+
+        val authService = AuthService(this)
+
+        loginButton.setOnClickListener {
+            val email = emailInput.text.toString().trim()
+            val password = passwordInput.text.toString().trim()
+
+            val result = authService.login(email, password)
+
+            if (result == "Connexion réussie") {
+                Toast.makeText(this, result, Toast.LENGTH_SHORT).show()
+                startActivity(Intent(this, MainActivity::class.java))
+                finish()
+            } else {
+                Toast.makeText(this, result, Toast.LENGTH_SHORT).show()
+                passwordInput.text.clear()
+                passwordInput.requestFocus()
+            }
         }
     }
 }
