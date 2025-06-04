@@ -41,7 +41,7 @@ class MainActivity : ComponentActivity() {
             port = 22,
             username = "groupe1",
             password = "Euler314",
-            remoteFilePath = "/data/user/users.json",
+            remoteFilePath = "data/user/users.json",
             localFileName = "rapport.json"
         ) { success, message ->
             if (success) {
