@@ -1,0 +1,211 @@
+[
+    {
+        "id": "101",
+        "login": "claire.dupont@uha.fr",
+        "mdp": "azerty1",
+        "nom": "Claire Dupont",
+        "role": "enseignant",
+        "td": "",
+        "tp": "",
+        "annee": "",
+        "spe": ""
+    },
+    {
+        "id": "102",
+        "login": "jean.lemoine@uha.fr",
+        "mdp": "azerty2",
+        "nom": "Jean Lemoine",
+        "role": "enseignant",
+        "td": "",
+        "tp": "",
+        "annee": "",
+        "spe": ""
+    },
+    {
+        "id": "103",
+        "login": "luc.bernard@uha.fr",
+        "mdp": "azerty3",
+        "nom": "Luc Bernard",
+        "role": "enseignant",
+        "td": "",
+        "tp": "",
+        "annee": "",
+        "spe": ""
+    },
+    {
+        "id": "104",
+        "login": "sophie.marchand@uha.fr",
+        "mdp": "azerty4",
+        "nom": "Sophie Marchand",
+        "role": "enseignant",
+        "td": "",
+        "tp": "",
+        "annee": "",
+        "spe": ""
+    },
+    {
+        "id": "001",
+        "login": "amine.martin@uha.fr",
+        "mdp": "pass01",
+        "nom": "Amine Martin",
+        "role": "etudiant",
+        "td": "TD2",
+        "tp": "TP3",
+        "annee": "1A",
+        "spe": "IR"
+    },
+    {
+        "id": "002",
+        "login": "lina.nguyen@uha.fr",
+        "mdp": "pass02",
+        "nom": "Lina Nguyen",
+        "role": "etudiant",
+        "td": "TD2",
+        "tp": "TP3",
+        "annee": "2A",
+        "spe": "IR"
+    },
+    {
+        "id": "003",
+        "login": "youssef.diallo@uha.fr",
+        "mdp": "pass03",
+        "nom": "Youssef Diallo",
+        "role": "etudiant",
+        "td": "TD2",
+        "tp": "TP2",
+        "annee": "1A",
+        "spe": "IR"
+    },
+    {
+        "id": "004",
+        "login": "nina.morel@uha.fr",
+        "mdp": "pass04",
+        "nom": "Nina Morel",
+        "role": "etudiant",
+        "td": "TD1",
+        "tp": "TP3",
+        "annee": "3A",
+        "spe": "IR"
+    },
+    {
+        "id": "005",
+        "login": "sami.leroy@uha.fr",
+        "mdp": "pass05",
+        "nom": "Sami Leroy",
+        "role": "etudiant",
+        "td": "TD1",
+        "tp": "TP1",
+        "annee": "3A",
+        "spe": "IR"
+    },
+    {
+        "id": "006",
+        "login": "emma.simon@uha.fr",
+        "mdp": "pass06",
+        "nom": "Emma Simon",
+        "role": "etudiant",
+        "td": "TD2",
+        "tp": "TP3",
+        "annee": "1A",
+        "spe": "IR"
+    },
+    {
+        "id": "007",
+        "login": "lorenzoo.garcia@uha.fr",
+        "mdp": "pass07",
+        "nom": "Lorenzo Garcia",
+        "role": "etudiant",
+        "td": "TD2",
+        "tp": "TP3",
+        "annee": "2A",
+        "spe": "IR"
+    },
+    {
+        "id": "008",
+        "login": "jade.faure@uha.fr",
+        "mdp": "pass08",
+        "nom": "Jade Faure",
+        "role": "etudiant",
+        "td": "TD3",
+        "tp": "TP2",
+        "annee": "2A",
+        "spe": "IR"
+    },
+    {
+        "id": "009",
+        "login": "omar.henry@uha.fr",
+        "mdp": "pass09",
+        "nom": "Omar Henry",
+        "role": "etudiant",
+        "td": "TD1",
+        "tp": "TP1",
+        "annee": "3A",
+        "spe": "IR"
+    },
+    {
+        "id": "010",
+        "login": "ines.roux@uha.fr",
+        "mdp": "pass10",
+        "nom": "Ines Roux",
+        "role": "etudiant",
+        "td": "TD1",
+        "tp": "TP2",
+        "annee": "1A",
+        "spe": "IR"
+    },
+    {
+        "id": "011",
+        "login": "yanis.giraud@uha.fr",
+        "mdp": "pass11",
+        "nom": "Yanis Giraud",
+        "role": "etudiant",
+        "td": "TD3",
+        "tp": "TP1",
+        "annee": "1A",
+        "spe": "IR"
+    },
+    {
+        "id": "012",
+        "login": "maya.adam@uha.fr",
+        "mdp": "pass12",
+        "nom": "Maya Adam",
+        "role": "etudiant",
+        "td": "TD1",
+        "tp": "TP2",
+        "annee": "1A",
+        "spe": "IR"
+    },
+    {
+        "id": "013",
+        "login": "khalid.picard@uha.fr",
+        "mdp": "pass13",
+        "nom": "Khalid Picard",
+        "role": "etudiant",
+        "td": "TD1",
+        "tp": "TP1",
+        "annee": "1A",
+        "spe": "IR"
+    },
+    {
+        "id": "014",
+        "login": "manon.chevalier@uha.fr",
+        "mdp": "pass14",
+        "nom": "Manon Chevalier",
+        "role": "etudiant",
+        "td": "TD2",
+        "tp": "TP3",
+        "annee": "2A",
+        "spe": "IR"
+    },
+    {
+        "id": "015",
+        "login": "zineb.renard@uha.fr",
+        "mdp": "pass15",
+        "nom": "Zineb Renard",
+        "role": "etudiant",
+        "td": "TD3",
+        "tp": "TP2",
+        "annee": "1A",
+        "spe": "IR"
+    }
+]
