@@ -26,20 +26,4 @@ open class User( open val password: String, open  val status : Status, open val 
         result = 31 * result + name.hashCode()
         return result
     }
-    fun getStatus() : Status {
-        return status
-    }
-
-    fun getId() : Int {
-        return id
-    }
-
-    fun getName() : String {
-        return name
-    }
-
-    fun getPassword() : String {
-        return password
-    }
-
 }

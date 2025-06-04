@@ -7,7 +7,7 @@ data class Student (override val name: String, override val id : Int, override v
         // Logic to get absence information
     }
 
-    fun getAsbencesByDate(date: String) {
+    fun getAbsencesByDate(date: String) {
         // Logic to get absence information by date
     }
 
