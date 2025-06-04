@@ -1,6 +1,5 @@
 package com.example.prezzapp
 
-import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -14,8 +13,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.room.Room
-import com.example.prezzapp.database.Database
 import com.example.prezzapp.model.AppDatabase
+import com.example.prezzapp.model.Status
+import com.example.prezzapp.model.User
 import com.example.prezzapp.ui.theme.PrezzAppTheme
 import com.jcraft.jsch.ChannelSftp
 import com.jcraft.jsch.JSch
@@ -72,6 +72,20 @@ class MainActivity : ComponentActivity() {
             applicationContext,
             AppDatabase::class.java, "prezzapp.db"
         ).build()
+        val db2 = AppDatabase.getDatabase(this)
+        val userDao = db2.userDao()
+
+        Thread {
+            val user = User(
+                1, "Alice", "password123", Status.STUDENT
+            )
+            userDao.insert(user)
+
+            val users = userDao.getAll()
+            for (u in users) {
+                Log.d("DB", "Nom: ${u.name}, Statut: ${u.status}")
+            }
+        }.start()
 
 
     }
