@@ -27,7 +27,7 @@ class LoginActivity : Activity() {
 
             if (result == "Connexion réussie") {
                 Toast.makeText(this, result, Toast.LENGTH_SHORT).show()
-                startActivity(Intent(this, MainActivity::class.java))
+                startActivity(Intent(this, StudentDashboardActivity::class.java))
                 finish()
             } else {
                 Toast.makeText(this, result, Toast.LENGTH_SHORT).show()

@@ -9,4 +9,6 @@
     <color name="white">#FFFFFFFF</color>
     <color name="blue_logo">#27A3CA</color>
     <color name="green_logo">#52BB7A</color>
+    <color name="green_justified">#E8F5E9</color>
+    <color name="orange_not_justified">#FFF3E0</color>
 </resources>
