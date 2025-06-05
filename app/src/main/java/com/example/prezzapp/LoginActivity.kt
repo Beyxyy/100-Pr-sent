@@ -23,14 +23,30 @@ class LoginActivity : Activity() {
             val email = emailInput.text.toString().trim()
             val password = passwordInput.text.toString().trim()
 
-            val result = authService.login(email, password)
+            try {
+                val user = authService.authenticate(email, password)
 
-            if (result == "Connexion réussie") {
-                Toast.makeText(this, result, Toast.LENGTH_SHORT).show()
-                startActivity(Intent(this, StudentDashboardActivity::class.java))
-                finish()
-            } else {
-                Toast.makeText(this, result, Toast.LENGTH_SHORT).show()
+                if (user != null) {
+                    val role = user.getString("role")
+                    Toast.makeText(this, "Bienvenue ${user.getString("nom")}", Toast.LENGTH_SHORT).show()
+
+                    if (role == "enseignant") {
+                        startActivity(Intent(this, TeacherDashboardActivity::class.java))
+                    } else if (role == "etudiant") {
+                        startActivity(Intent(this, StudentDashboardActivity::class.java))
+                    } else {
+                        Toast.makeText(this, "Rôle inconnu", Toast.LENGTH_SHORT).show()
+                    }
+
+                    finish()
+                } else {
+                    Toast.makeText(this, "Utilisateur non trouvé", Toast.LENGTH_SHORT).show()
+                    passwordInput.text.clear()
+                    passwordInput.requestFocus()
+                }
+
+            } catch (e: IllegalArgumentException) {
+                Toast.makeText(this, e.message, Toast.LENGTH_SHORT).show()
                 passwordInput.text.clear()
                 passwordInput.requestFocus()
             }

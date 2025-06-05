@@ -15,16 +15,14 @@ class JustifyAbsenceActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityJustifyAbsenceBinding
     private var selectedAbsence: Absence? = null
-    private var selectedFileUri: Uri? = null // Pour stocker l'URI du fichier sélectionné
+    private var selectedFileUri: Uri? = null
 
-    // Lanceur d'activité pour sélectionner un fichier
     private val pickFileLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             result.data?.data?.let { uri ->
                 selectedFileUri = uri
                 Toast.makeText(this, "Fichier sélectionné: ${uri.lastPathSegment}", Toast.LENGTH_LONG).show()
-                // Ici, vous pourriez activer un bouton "Envoyer" ou changer l'UI pour montrer que le fichier est prêt.
-                uploadJustification() // Appel immédiat pour l'exemple
+                uploadJustification()
             }
         } else {
             Toast.makeText(this, "Sélection de fichier annulée", Toast.LENGTH_SHORT).show()
@@ -36,50 +34,40 @@ class JustifyAbsenceActivity : AppCompatActivity() {
         binding = ActivityJustifyAbsenceBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Récupérer l'objet Absence passé par l'Intent
-        selectedAbsence = intent.getSerializableExtra("selected_absence") as? Absence
+        selectedAbsence = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            intent.getSerializableExtra("selected_absence", Absence::class.java)
+        } else {
+            @Suppress("DEPRECATION")
+            intent.getSerializableExtra("selected_absence") as? Absence
+        }
 
-        setupToolbar()
         displayAbsenceDetails()
         setupFileUpload()
-    }
-
-    private fun setupToolbar() {
-        setSupportActionBar(binding.toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setDisplayShowTitleEnabled(false)
-        binding.toolbar.setNavigationOnClickListener {
-            onBackPressedDispatcher.onBackPressed()
-        }
     }
 
     private fun displayAbsenceDetails() {
         selectedAbsence?.let { absence ->
             binding.tvDetailCourseDate.text = "${absence.courseName} - ${absence.date}"
-            binding.tvDetailProfessor.text = "Professeur: ${absence.professorName}"
-            // Le statut reste "Non justifié" car on est sur cette page pour justifier
+            binding.tvDetailProfessor.text = "${absence.professorName}"
             binding.tvMessageAbsence.text = "Votre absence en ${absence.courseName} le ${absence.date} n'est pas justifiée."
         } ?: run {
-            // Gérer le cas où l'absence n'est pas passée (erreur)
-            Toast.makeText(this, "Erreur: Absence non trouvée.", Toast.LENGTH_SHORT).show()
-            finish() // Ferme l'activité
+            Toast.makeText(this, "Erreur : Absence non trouvée.", Toast.LENGTH_SHORT).show()
+            finish()
         }
     }
 
     private fun setupFileUpload() {
-        // Gérer le clic sur le LinearLayout "Sélectionner un fichier"
-        binding.cardUploadJustification.setOnClickListener { // Cliquer sur la CardView entière
+        binding.cardUploadJustification.setOnClickListener {
             openFilePicker()
         }
-        binding.btnSelectFile.setOnClickListener { // Cliquer sur le LinearLayout "Sélectionner un fichier"
+        binding.btnSelectFile.setOnClickListener {
             openFilePicker()
         }
     }
 
     private fun openFilePicker() {
         val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
-            type = "*/*" // Permet de sélectionner n'importe quel type de fichier
-            // Pour des types spécifiques: "image/*" pour les images, "application/pdf" pour les PDF
+            type = "*/*"
             addCategory(Intent.CATEGORY_OPENABLE)
         }
         try {
@@ -94,22 +82,11 @@ class JustifyAbsenceActivity : AppCompatActivity() {
         selectedFileUri?.let { uri ->
             selectedAbsence?.let { absence ->
                 Toast.makeText(this, "Début de l'upload du justificatif pour ${absence.courseName}...", Toast.LENGTH_LONG).show()
-
-                // ICI : Implémentez la LOGIQUE RÉELLE D'UPLOAD DU FICHIER
-                // Cela implique généralement :
-                // 1. Lire le contenu du fichier depuis l'URI (getContentResolver().openInputStream(uri))
-                // 2. Envoyer le fichier à votre API backend (en utilisant Retrofit, OkHttp, etc.)
-                // 3. Gérer la réponse du serveur (succès/échec)
-                // 4. Mettre à jour le statut de l'absence dans votre base de données après un upload réussi
-
-                // Pour l'exemple, simule un délai et marque l'absence comme justifiée
                 binding.cardUploadJustification.postDelayed({
-                    absence.isJustified = true // Met à jour l'objet Absence localement
+                    absence.isJustified = true
                     Toast.makeText(this, "Justificatif envoyé et absence justifiée !", Toast.LENGTH_LONG).show()
-                    // Si l'upload est un succès, vous pourriez vouloir terminer cette activité
-                    // et rafraîchir la liste dans StudentDashboardActivity
-                    finish() // Retourne à l'activité précédente
-                }, 2000) // Simule 2 secondes d'upload
+                    finish()
+                }, 2000)
 
             }
         } ?: run {

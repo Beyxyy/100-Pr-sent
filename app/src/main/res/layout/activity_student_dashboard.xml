@@ -5,57 +5,61 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/fond"
     tools:context=".StudentDashboardActivity">
 
-    <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/toolbar"
-        android:layout_width="0dp"
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        android:title="Tableau de bord"
-        android:titleTextColor="@android:color/white"
+        android:text="@string/prezzapp"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:padding="16dp"
+        android:layout_marginTop="24dp"
+        android:gravity="center_horizontal"
+        android:textColor="@color/green_logo"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-
     <TextView
-        android:id="@+id/tv_title"
-        android:layout_width="0dp"
+        android:id="@+id/tv_titre_absences"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="PrezzApp"
-        android:textSize="24sp"
+        android:text="@string/vos_absences"
+        android:textSize="20sp"
         android:textStyle="bold"
-        android:padding="16dp"
-        android:gravity="center_horizontal"
-        android:textColor="#52bb7a"
-        app:layout_constraintTop_toBottomOf="@id/toolbar"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        android:textColor="@color/blue_logo"
+        android:layout_marginTop="25dp"
+        android:layout_marginStart="24dp"
+        android:textAlignment="viewStart"
+        app:layout_constraintTop_toBottomOf="@id/tv_title"
+        app:layout_constraintStart_toStartOf="parent" />
 
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_absences"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginTop="12dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintTop_toBottomOf="@id/tv_title"
+        app:layout_constraintTop_toBottomOf="@id/tv_titre_absences"
         app:layout_constraintBottom_toTopOf="@id/btn_voir_plus"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        tools:listitem="@layout/item_absence" />
+        tools:listitem="@layout/item_absence"/>
 
     <Button
         android:id="@+id/btn_voir_plus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Voir plus"
+        android:text="@string/voir_plus"
         android:layout_marginBottom="16dp"
         android:background="@android:color/transparent"
-        android:textColor="#27a3ca"
+        android:textColor="@color/blue_logo"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
