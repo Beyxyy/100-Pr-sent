@@ -10,4 +10,5 @@ interface CoursDao {
     @Query("SELECT * FROM Cours") fun getAll(): List<Cours>
     @Query("DELETE FROM Cours") fun deleteAll(): Unit
     @Query("Select user.* from cours join user on cours.annee=user.annee and cours.spe=user.spe where cours.id= :coursId and user.status='student'") fun getPromobyCours(coursId : String ): List<User>
+    @Query("Select * from cours where prof= :profNom ") fun getCoursByProfName(profNom : String) : List<Cours>
 }
