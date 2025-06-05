@@ -8,8 +8,14 @@ enum class Status {
 
 @Entity
 open class User(
-    @PrimaryKey(autoGenerate = true) val id: Int,
+    @PrimaryKey(autoGenerate = true)
+    val id: Int,
+    val login: String,
     val name: String,
     val password: String,
-    val status: Status
+    val td: String,
+    val tp: String,
+    val annee: String,
+    val spe: String,
+    val status: Status,
 )

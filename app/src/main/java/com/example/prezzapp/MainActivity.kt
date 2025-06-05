@@ -14,6 +14,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.room.Room
 import com.example.prezzapp.model.AppDatabase
+import com.example.prezzapp.model.Cours
+import com.example.prezzapp.model.CoursDao
+import com.example.prezzapp.model.PresenceDao
 import com.example.prezzapp.model.Status
 import com.example.prezzapp.model.User
 import com.example.prezzapp.ui.theme.PrezzAppTheme
@@ -72,12 +75,36 @@ class MainActivity : ComponentActivity() {
             applicationContext,
             AppDatabase::class.java, "prezzapp.db"
         ).build()
-        val db2 = AppDatabase.getDatabase(this)
-        val userDao = db2.userDao()
+        val userDao = db.userDao()
+        val presenceDao = db.presenceDao()
+        val coursDao = db.coursDao()
 
         Thread {
+            val cours = Cours(
+                id = 0,
+                prof = "1",
+                jour = "15/06",
+                heure = "10h",
+                groupe = "CM",
+                annee = "1A",
+                spe = "IR",
+            )
+            coursDao.deleteAll()
+            coursDao.insert(cours)
+
+            val COURS = coursDao.getAll()
+            for (c in COURS) {
+                Log.d("DB", "ID: ${c.id}, spe: ${c.spe}")
+            }
+            userDao.deleteAll()
             val user = User(
-                1, "Alice", "password123", Status.STUDENT
+                id = 0, name = "Alice", password = "password123",
+                td = "td1",
+                tp = "tp1",
+                annee = "1A",
+                spe = "IR",
+                status = Status.STUDENT,
+                login = "alice.bertrand@uha.fr"
             )
             userDao.insert(user)
 
@@ -222,3 +249,4 @@ fun GreetingPreview() {
         Greeting("Android")
     }
 }
+
