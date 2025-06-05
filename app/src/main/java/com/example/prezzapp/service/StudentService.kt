@@ -7,13 +7,11 @@ import com.example.prezzapp.model.PresenceDao
 import com.example.prezzapp.model.UserDao
 
 
-class StudentService {
-    private var dbInstance: AppDatabase? = null
+class StudentService : Service {
     private var userDao : UserDao? = null
     private var presenceDao : PresenceDao? = null
 
-    constructor(context: ComponentActivity) {
-        dbInstance = AppDatabase.getDatabase(context);
+    constructor(context: ComponentActivity) : super(context) {
         userDao = dbInstance!!.userDao()
         presenceDao = dbInstance!!.presenceDao()
     }
