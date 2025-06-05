@@ -20,7 +20,7 @@ class StudentService {
 
 
     fun getAllAbsenceByUserId(userId : Int) : List<Presence>{
-        return presenceDao!!.getByUser(1)
+        return presenceDao!!.getByUser(userId)
     }
 
     fun getAbsenceById(absenceId : Int) : Presence {
