@@ -71,13 +71,11 @@ class MainActivity : ComponentActivity() {
                 Log.d("FICHIER", "Aucun fichier trouvé.")
             }
         }
-        val db = Room.databaseBuilder(
-            applicationContext,
-            AppDatabase::class.java, "prezzapp.db"
-        ).build()
-        val userDao = db.userDao()
-        val presenceDao = db.presenceDao()
-        val coursDao = db.coursDao()
+
+        val db2 = AppDatabase.getDatabase(this)
+        val userDao = db2.userDao()
+        val presenceDao = db2.presenceDao()
+        val coursDao = db2.coursDao()
 
         Thread {
             val cours = Cours(
