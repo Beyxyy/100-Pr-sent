@@ -1,4 +1,3 @@
-// src/main/java/com/example/prezzapp/JustifyAbsenceActivity.kt
 package com.example.prezzapp
 
 import android.app.Activity
@@ -8,14 +7,20 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.example.prezzapp.data.Absence
 import com.example.prezzapp.databinding.ActivityJustifyAbsenceBinding
+import com.example.prezzapp.model.AppDatabase
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class JustifyAbsenceActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityJustifyAbsenceBinding
     private var selectedAbsence: Absence? = null
     private var selectedFileUri: Uri? = null
+    private val presenceDao by lazy { AppDatabase.getDatabase(applicationContext).presenceDao() }
 
     private val pickFileLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
@@ -48,7 +53,7 @@ class JustifyAbsenceActivity : AppCompatActivity() {
     private fun displayAbsenceDetails() {
         selectedAbsence?.let { absence ->
             binding.tvDetailCourseDate.text = "${absence.courseName} - ${absence.date}"
-            binding.tvDetailProfessor.text = "${absence.professorName}"
+            binding.tvDetailProfessor.text = absence.professorName
             binding.tvMessageAbsence.text = "Votre absence en ${absence.courseName} le ${absence.date} n'est pas justifiée."
         } ?: run {
             Toast.makeText(this, "Erreur : Absence non trouvée.", Toast.LENGTH_SHORT).show()
@@ -79,18 +84,37 @@ class JustifyAbsenceActivity : AppCompatActivity() {
     }
 
     private fun uploadJustification() {
-        selectedFileUri?.let { uri ->
-            selectedAbsence?.let { absence ->
-                Toast.makeText(this, "Début de l'upload du justificatif pour ${absence.courseName}...", Toast.LENGTH_LONG).show()
-                binding.cardUploadJustification.postDelayed({
-                    absence.isJustified = true
-                    Toast.makeText(this, "Justificatif envoyé et absence justifiée !", Toast.LENGTH_LONG).show()
-                    finish()
-                }, 2000)
-
-            }
-        } ?: run {
+        val uri = selectedFileUri
+        val absence = selectedAbsence
+        if (uri == null) {
             Toast.makeText(this, "Veuillez sélectionner un fichier d'abord.", Toast.LENGTH_SHORT).show()
+            return
+        }
+        if (absence == null) {
+            Toast.makeText(this, "Absence non sélectionnée.", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        lifecycleScope.launch {
+            val presence = withContext(Dispatchers.IO) {
+                presenceDao.getAbsenceById(absence.id.toInt())
+            }
+
+            if (presence != null) {
+                val updatedPresence = presence.copy(
+                    estJustifie = true,
+                    lien = uri.toString()
+                )
+
+                withContext(Dispatchers.IO) {
+                    presenceDao.updatePresence(updatedPresence)
+                }
+
+                Toast.makeText(this@JustifyAbsenceActivity, "Justificatif envoyé et absence justifiée !", Toast.LENGTH_LONG).show()
+                finish()
+            } else {
+                Toast.makeText(this@JustifyAbsenceActivity, "Absence introuvable en base.", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 }

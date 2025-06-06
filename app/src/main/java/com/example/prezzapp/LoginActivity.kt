@@ -29,18 +29,22 @@ class LoginActivity : Activity() {
 
                 if (user != null) {
                     val role = user.getString("role")
+                    val userId = user.getInt("id") // 👈 Récupère l'ID ici
                     Toast.makeText(this, "Bienvenue ${user.getString("nom")}", Toast.LENGTH_SHORT).show()
 
                     if (role == "enseignant") {
                         startActivity(Intent(this, TeacherDashboardActivity::class.java))
                     } else if (role == "etudiant") {
-                        startActivity(Intent(this, StudentDashboardActivity::class.java))
+                        val intent = Intent(this, StudentDashboardActivity::class.java)
+                        intent.putExtra("userId", userId) // 👈 Passe l'ID ici
+                        startActivity(intent)
                     } else {
                         Toast.makeText(this, "Rôle inconnu", Toast.LENGTH_SHORT).show()
                     }
 
                     finish()
-                } else {
+                }
+                else {
                     Toast.makeText(this, "Utilisateur non trouvé", Toast.LENGTH_SHORT).show()
                     passwordInput.text.clear()
                     passwordInput.requestFocus()

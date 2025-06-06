@@ -5,9 +5,11 @@ import android.util.Log
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import androidx.sqlite.db.SupportSQLiteDatabase
 
-@Database(entities = [User::class, Cours::class, Presence::class ], version = 1)
+@Database(entities = [User::class, Cours::class, Presence::class], version = 2)
+@TypeConverters(Converters::class)  // ← Ajoute cette ligne ici
 abstract class AppDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
     abstract fun coursDao(): CoursDao
@@ -35,6 +37,7 @@ abstract class AppDatabase : RoomDatabase() {
                             Log.d("RoomDB", "Base de données ouverte.")
                         }
                     })
+                    .fallbackToDestructiveMigration()  // <-- Ici, on ajoute la gestion de migration destructive
                     .build()
                 INSTANCE = instance
                 instance
