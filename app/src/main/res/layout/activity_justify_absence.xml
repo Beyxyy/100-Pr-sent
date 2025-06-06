@@ -54,7 +54,7 @@
                 app:layout_constraintEnd_toStartOf="@+id/tv_detail_justified_status"
                 app:layout_constraintHorizontal_bias="0"
                 app:layout_constraintHorizontal_weight="1"
-                tools:text="Cours de Physique - 02/01/2025" />
+                tools:text="Physique - 02/01/2025" />
 
             <TextView
                 android:id="@+id/tv_detail_professor"
