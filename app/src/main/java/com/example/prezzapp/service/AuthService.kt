@@ -1,4 +1,4 @@
-package com.example.prezzapp
+package com.example.prezzapp.service
 
 import android.content.Context
 import org.json.JSONArray
