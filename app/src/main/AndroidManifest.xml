@@ -54,6 +54,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".TeacherDashboardActivity" />
         </activity>
-
+        <activity
+            android:name=".TeacherCoursesActivity"
+            android:exported="true"
+            android:parentActivityName=".TeacherDashboardActivity" >
+        </activity>
     </application>
 </manifest>

@@ -17,29 +17,44 @@ class TeacherDashboardActivity : AppCompatActivity() {
     private val allAbsences = mutableListOf<Absence>()
     private val visibleAbsences = mutableListOf<Absence>()
     private val pageSize = 7
-    private var profLogin: String? = null
+    private var profLogin: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityTeacherDashboardBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        profLogin = intent.getStringExtra("prof_login")
+        profLogin = intent.getStringExtra("prof_login") ?: ""
 
         setupRecyclerView()
         loadAbsencesFromDatabase()
 
         binding.btnVoirPlusProf.setOnClickListener { loadNextAbsences() }
+
+        binding.btnMesCours.setOnClickListener {
+            Thread {
+                val db = AppDatabase.getDatabase(this)
+                val userDao = db.userDao()
+                val coursDao = db.coursDao()
+                val profName = userDao.getAll().find { it.login == profLogin }?.name ?: ""
+                val courseId = coursDao.getAll().firstOrNull { it.prof == profName }?.id ?: -1
+                runOnUiThread {
+                    startActivity(Intent(this, TeacherCoursesActivity::class.java).apply {
+                        putExtra("prof_login", profLogin)
+                        putExtra("course_id", courseId)
+                    })
+                }
+            }.start()
+        }
     }
 
     private fun setupRecyclerView() {
         absenceAdapter = AbsenceAdapterTeacher(this, visibleAbsences) { absence ->
             if (absence.isJustified) {
-                val intent = Intent(this, JustifyAbsenceActivity::class.java).apply {
+                startActivity(Intent(this, JustifyAbsenceActivity::class.java).apply {
                     putExtra("selected_absence", absence)
                     putExtra("user_role", "teacher")
-                }
-                startActivity(intent)
+                })
             }
         }
         binding.rvAbsencesProf.layoutManager = LinearLayoutManager(this)
@@ -60,16 +75,16 @@ class TeacherDashboardActivity : AppCompatActivity() {
 
             allAbsences.clear()
             allAbsences.addAll(
-                presences.mapNotNull { presence ->
-                    val cours = coursDuProf.find { it.id == presence.coursId }
-                    val student = users.find { it.id == presence.userId }
+                presences.mapNotNull { p ->
+                    val cours = coursDuProf.find { it.id == p.coursId }
+                    val student = users.find { it.id == p.userId }
                     if (cours != null && student != null) {
                         Absence(
-                            id = presence.id.toString(),
+                            id = p.id.toString(),
                             courseName = cours.nomcours,
                             date = cours.jour,
                             professorName = student.name,
-                            isJustified = presence.estJustifie
+                            isJustified = p.estJustifie
                         )
                     } else null
                 }
