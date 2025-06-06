@@ -6,7 +6,18 @@ import androidx.room.Query
 
 @Dao
 interface PresenceDao {
-    @Insert fun insert(presence: Presence)
-    @Query("SELECT * from Presence where id= :presenceId ") fun getAbsenceById(presenceId : Int) : Presence
-    @Query("SELECT * FROM Presence WHERE userId = :userId") fun getByUser(userId: Int): List<Presence>
+    @Insert
+    fun insert(presence: Presence)
+
+    @Query("DELETE FROM Presence")
+    fun deleteAll()
+
+    @Query("SELECT * FROM Presence")
+    fun getAll(): List<Presence>
+
+    @Query("SELECT * FROM Presence WHERE user_id = :userId")
+    fun getByUser(userId: Int): List<Presence>
+
+    @Query("SELECT * FROM Presence WHERE id = :absenceId")
+    fun getAbsenceById(absenceId: Int): Presence
 }

@@ -7,7 +7,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
 
-@Database(entities = [User::class, Cours::class, Presence::class ], version = 1)
+@Database(entities = [User::class, Cours::class, Presence::class], version = 2)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
     abstract fun coursDao(): CoursDao
@@ -24,6 +24,7 @@ abstract class AppDatabase : RoomDatabase() {
                     AppDatabase::class.java,
                     "prezzapp_database.db"
                 )
+                    .fallbackToDestructiveMigration(false)
                     .addCallback(object : RoomDatabase.Callback() {
                         override fun onCreate(db: SupportSQLiteDatabase) {
                             super.onCreate(db)

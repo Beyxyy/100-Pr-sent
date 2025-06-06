@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.prezzapp.data.Absence
 import com.example.prezzapp.databinding.ActivityTeacherDashboardBinding
 import com.example.prezzapp.adapters.AbsenceAdapterTeacher
+import com.example.prezzapp.model.AppDatabase
 
 class TeacherDashboardActivity : AppCompatActivity() {
 
@@ -23,8 +24,7 @@ class TeacherDashboardActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setupRecyclerView()
-        loadAllAbsences()
-        loadNextAbsences()
+        loadAbsencesFromDatabase()
 
         binding.btnVoirPlusProf.setOnClickListener {
             loadNextAbsences()
@@ -45,17 +45,37 @@ class TeacherDashboardActivity : AppCompatActivity() {
         binding.rvAbsencesProf.adapter = absenceAdapter
     }
 
-    private fun loadAllAbsences() {
-        allAbsences.clear()
-        allAbsences.addAll(
-            listOf(
-                Absence("1", "Maths", "01/01/2025", "Élève 1", true),
-                Absence("2", "Physique", "02/01/2025", "Élève 2", false),
-                Absence("3", "Anglais", "03/01/2025", "Élève 3", true),
-                Absence("4", "Histoire", "04/01/2025", "Élève 4", false),
-                Absence("5", "EPS", "05/01/2025", "Élève 5", true)
+    private fun loadAbsencesFromDatabase() {
+        Thread {
+            val db = AppDatabase.getDatabase(this)
+            val presenceDao = db.presenceDao()
+            val coursDao = db.coursDao()
+            val userDao = db.userDao()
+            val coursList = coursDao.getAll()
+            val userList = userDao.getAll()
+            val presences = presenceDao.getAll()
+
+            allAbsences.clear()
+            allAbsences.addAll(
+                presences.mapNotNull { presence ->
+                    val cours = coursList.find { it.id == presence.coursId }
+                    val student = userList.find { it.id == presence.userId }
+                    if (cours != null && student != null) {
+                        Absence(
+                            id = presence.id.toString(),
+                            courseName = cours.prof,
+                            date = cours.jour,
+                            professorName = student.name,
+                            isJustified = presence.estJustifie
+                        )
+                    } else null
+                }
             )
-        )
+
+            runOnUiThread {
+                loadNextAbsences()
+            }
+        }.start()
     }
 
     private fun loadNextAbsences() {
@@ -71,5 +91,12 @@ class TeacherDashboardActivity : AppCompatActivity() {
         } else {
             View.VISIBLE
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        visibleAbsences.clear()
+        allAbsences.clear()
+        loadAbsencesFromDatabase()
     }
 }

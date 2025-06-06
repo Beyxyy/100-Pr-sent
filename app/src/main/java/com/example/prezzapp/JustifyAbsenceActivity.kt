@@ -10,6 +10,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.example.prezzapp.data.Absence
 import com.example.prezzapp.databinding.ActivityJustifyAbsenceBinding
+import com.example.prezzapp.model.AppDatabase
 
 class JustifyAbsenceActivity : AppCompatActivity() {
 
@@ -96,15 +97,26 @@ class JustifyAbsenceActivity : AppCompatActivity() {
     private fun uploadJustification() {
         selectedFileUri?.let { uri ->
             selectedAbsence?.let { absence ->
-                Toast.makeText(this, "Début de l'upload du justificatif pour ${absence.courseName}...", Toast.LENGTH_LONG).show()
-                binding.cardUploadJustification.postDelayed({
-                    absence.isJustified = true
-                    Toast.makeText(this, "Justificatif envoyé et absence justifiée !", Toast.LENGTH_LONG).show()
-                    finish()
-                }, 2000)
+                val db = AppDatabase.getDatabase(this)
+                val presenceDao = db.presenceDao()
+
+                Thread {
+                    val presence = presenceDao.getAbsenceById(absence.id.toInt())
+                    val updatedPresence = presence.copy(
+                        estJustifie = true,
+                        lien = uri.toString()
+                    )
+                    presenceDao.insert(updatedPresence)
+
+                    runOnUiThread {
+                        Toast.makeText(this, "Justificatif envoyé et absence justifiée !", Toast.LENGTH_LONG).show()
+                        finish()
+                    }
+                }.start()
             }
         } ?: run {
             Toast.makeText(this, "Veuillez sélectionner un fichier d'abord.", Toast.LENGTH_SHORT).show()
         }
     }
+
 }

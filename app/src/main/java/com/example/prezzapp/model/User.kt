@@ -1,6 +1,8 @@
 package com.example.prezzapp.model
+
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+
 enum class Status {
     STUDENT,
     TEACHER
