@@ -15,12 +15,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.app.ActivityCompat
+import androidx.room.Room
 import com.example.prezzapp.database.SftpConnection
 import com.example.prezzapp.model.AppDatabase
 import com.example.prezzapp.model.Cours
 import com.example.prezzapp.model.Status
 import com.example.prezzapp.model.User
 import com.example.prezzapp.ui.theme.PrezzAppTheme
+import java.io.File
 
 
 class MainActivity : ComponentActivity() {
@@ -38,19 +40,26 @@ class MainActivity : ComponentActivity() {
             }
         }
 
-        val sftpConnection : SftpConnection = SftpConnection.getInstance()
-        sftpConnection.testSSHConnection { success, message ->
-            if (success) {
-                Log.d("SSH", "Connection successful: $message")
-            } else {
-                Log.e("SSH", "Connection failed: $message")
+        Thread {
+            val sftpConnection: SftpConnection = SftpConnection.getInstance()
+            sftpConnection.testSSHConnection { success, message ->
+                if (success) {
+                    Log.d("SSH", "Connection successful: $message")
+                    sftpConnection.importDatabaseFromServer(this)
+                } else {
+                    Log.e("SSH", "Connection failed: $message")
+                }
             }
-        }
 
-        val db = AppDatabase.getDatabase(this)
+            Room.databaseBuilder(this, AppDatabase::class.java, "prezapp_database.db")
+                .createFromFile(File("/storage/emulated/0/Download/"))
+                .build()
+        }.start()
+
+        /*val db = AppDatabase.getDatabase(this)
 
 
-        val userDao = db.userDao()
+        val userDao = db.userDao()x
         val presenceDao = db.presenceDao()
         val coursDao = db.coursDao()
 
@@ -101,7 +110,7 @@ class MainActivity : ComponentActivity() {
             }
 
         }.start()
-
+*/
     }
 
 }

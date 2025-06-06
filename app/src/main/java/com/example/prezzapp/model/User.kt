@@ -13,9 +13,9 @@ open class User(
     val login: String,
     val name: String,
     val password: String,
-    val td: String,
-    val tp: String,
-    val annee: String,
-    val spe: String,
+    val td: String?,
+    val tp: String?,
+    val annee: String?,
+    val spe: String?,
     val status: Status,
 )
