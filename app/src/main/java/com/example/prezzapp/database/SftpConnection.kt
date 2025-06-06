@@ -6,7 +6,7 @@ import java.io.FileOutputStream
 
 class SftpConnection {
 
-    private val host: String = "10.74.252.198"
+    private val host: String = "10.74.252.206"
     private val port: Int = 22
     private val username: String = "groupe1"
     private val password: String = "Euler314"

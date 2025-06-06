@@ -1,5 +1,7 @@
 package com.example.prezzapp
 
+import android.Manifest
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -12,12 +14,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.app.ActivityCompat
 import com.example.prezzapp.database.SftpConnection
 import com.example.prezzapp.model.AppDatabase
 import com.example.prezzapp.model.Cours
 import com.example.prezzapp.model.Status
 import com.example.prezzapp.model.User
 import com.example.prezzapp.ui.theme.PrezzAppTheme
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,6 +48,8 @@ class MainActivity : ComponentActivity() {
         }
 
         val db2 = AppDatabase.getDatabase(this)
+
+        
         val userDao = db2.userDao()
         val presenceDao = db2.presenceDao()
         val coursDao = db2.coursDao()
@@ -53,7 +59,7 @@ class MainActivity : ComponentActivity() {
                 id = 0,
                 prof = "1",
                 jour = "15/06",
-                heure = "10h",
+                heure = "10h-12h",
                 groupe = "CM",
                 annee = "1A",
                 spe = "IR",
@@ -83,7 +89,25 @@ class MainActivity : ComponentActivity() {
             }
         }.start()
 
+        // Demander la permission d’écriture si Android 10 ou moins
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                1
+            )
+        }
+
+        // Export automatique de la base de données au démarrage de l'app
+        val exportSuccess = AppDatabase.getDatabase(this).exportDatabase(this)
+
+        if (exportSuccess) {
+            Log.d("ExportDB", "Base de données exportée avec succès.")
+        } else {
+            Log.e("ExportDB", "Échec de l'export de la base de données.")
+        }
     }
+
 }
 
 @Composable

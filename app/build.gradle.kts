@@ -43,6 +43,7 @@ android {
 dependencies {
 
     val roomVersion = "2.7.1"
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
 
     implementation("androidx.room:room-runtime:$roomVersion")
     kapt("androidx.room:room-compiler:$roomVersion")
