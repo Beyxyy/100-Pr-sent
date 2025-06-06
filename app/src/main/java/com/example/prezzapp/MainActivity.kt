@@ -47,12 +47,12 @@ class MainActivity : ComponentActivity() {
             }
         }
 
-        val db2 = AppDatabase.getDatabase(this)
+        val db = AppDatabase.getDatabase(this)
 
-        
-        val userDao = db2.userDao()
-        val presenceDao = db2.presenceDao()
-        val coursDao = db2.coursDao()
+
+        val userDao = db.userDao()
+        val presenceDao = db.presenceDao()
+        val coursDao = db.coursDao()
 
         Thread {
             val cours = Cours(
@@ -83,11 +83,8 @@ class MainActivity : ComponentActivity() {
             )
             userDao.insert(user)
 
-            val users = userDao.getAll()
-            for (u in users) {
-                Log.d("DB", "Nom: ${u.name}, Statut: ${u.status}")
-            }
-        }.start()
+
+        }.join()
 
         // Demander la permission d’écriture si Android 10 ou moins
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
@@ -99,7 +96,7 @@ class MainActivity : ComponentActivity() {
         }
 
         // Export automatique de la base de données au démarrage de l'app
-        val exportSuccess = AppDatabase.getDatabase(this).exportDatabase(this)
+        val exportSuccess = db.exportDatabase(this)
 
         if (exportSuccess) {
             Log.d("ExportDB", "Base de données exportée avec succès.")

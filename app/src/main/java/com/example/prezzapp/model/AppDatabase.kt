@@ -8,6 +8,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.example.prezzapp.database.SftpConnection
 import java.io.File
 import java.io.IOException
 
@@ -53,31 +54,6 @@ abstract class AppDatabase : RoomDatabase() {
         }
     }
 
-        fun backupDatabase(context: Context): Int {
-            val dbFile = context.getDatabasePath(DB_NAME)
-            val walFile = File(dbFile.path + WAL_SUFFIX)
-            val shmFile = File(dbFile.path + SHM_SUFFIX)
-            val backupFile = File(dbFile.path + BACKUP_SUFFIX)
-            val backupWalFile = File(backupFile.path + WAL_SUFFIX)
-            val backupShmFile = File(backupFile.path + SHM_SUFFIX)
-
-            if (backupFile.exists()) backupFile.delete()
-            if (backupWalFile.exists()) backupWalFile.delete()
-            if (backupShmFile.exists()) backupShmFile.delete()
-
-            checkpoint(context)
-
-            return try {
-                dbFile.copyTo(backupFile, overwrite = true)
-                if (walFile.exists()) walFile.copyTo(backupWalFile, overwrite = true)
-                if (shmFile.exists()) shmFile.copyTo(backupShmFile, overwrite = true)
-                Log.d("RoomDB", "Sauvegarde effectuée avec succès.")
-                0
-            } catch (e: IOException) {
-                Log.e("RoomDB", "Erreur lors de la sauvegarde : ${e.message}")
-                -1
-            }
-        }
 
         fun restoreDatabase(context: Context, restart: Boolean = true) {
             val dbFile = context.getDatabasePath(DB_NAME)
@@ -114,7 +90,13 @@ abstract class AppDatabase : RoomDatabase() {
     fun exportDatabase(context: Context): Boolean {
         val sourceDb = context.getDatabasePath("prezzapp_database.db")
         Log.d("ExportDB", "Source DB path: ${sourceDb.absolutePath}")
-
+        val db = AppDatabase.getDatabase(context)
+        val userDao = db.userDao()
+        val users = userDao.getAll()
+        checkpoint(context)
+        for (u in users) {
+            Log.d("DB", "Nom: ${u.name}, Statut: ${u.status}")
+        }
         val destDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
 
         if (destDir == null) {
@@ -141,6 +123,15 @@ abstract class AppDatabase : RoomDatabase() {
             Log.d("ExportDB", "Fichier exporté existe ? ${destDb.exists()}")
             Log.d("ExportDB", "Chemin complet : ${destDb.absolutePath}")
             Log.d("ExportDB", "Export réussi vers : ${destDb.absolutePath}")
+
+            val sftp = SftpConnection.getInstance().uploadFileviaSftp(destDb.absolutePath , "/data")
+            { success, message ->
+                if (success) {
+                    Log.d("SSH", "Connection successful: $message")
+                } else {
+                    Log.e("SSH", "Connection failed: $message")
+                }
+            }
             true
         } catch (e: IOException) {
             Log.e("ExportDB", "Erreur d'export : ${e.message}")
