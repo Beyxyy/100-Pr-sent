@@ -82,27 +82,26 @@ class MainActivity : ComponentActivity() {
                 login = "alice.bertrand@uha.fr"
             )
             userDao.insert(user)
+            // Demander la permission d’écriture si Android 10 ou moins
+            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                    1
+                )
+            }
+            db.close()
+            // Export automatique de la base de données au démarrage de l'app
+            val exportSuccess = db.exportDatabase(this)
 
+            if (exportSuccess) {
+                Log.d("ExportDB", "Base de données exportée avec succès.")
+            } else {
+                Log.e("ExportDB", "Échec de l'export de la base de données.")
+            }
 
-        }.join()
+        }.start()
 
-        // Demander la permission d’écriture si Android 10 ou moins
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                1
-            )
-        }
-
-        // Export automatique de la base de données au démarrage de l'app
-        val exportSuccess = db.exportDatabase(this)
-
-        if (exportSuccess) {
-            Log.d("ExportDB", "Base de données exportée avec succès.")
-        } else {
-            Log.e("ExportDB", "Échec de l'export de la base de données.")
-        }
     }
 
 }
