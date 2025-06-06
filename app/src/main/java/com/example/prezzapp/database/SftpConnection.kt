@@ -1,5 +1,8 @@
 package com.example.prezzapp.database
 
+import android.content.Context
+import android.content.Intent
+import android.util.Log
 import com.jcraft.jsch.*
 import java.io.File
 import java.io.FileOutputStream
@@ -133,40 +136,70 @@ class SftpConnection {
         }
 
 
-   fun uploadFileviaSftp(
-       filepath: String,
-       remoteDestinationPath: String,
-       onResult: (Boolean, String) -> Unit
-   ) {
-       Thread {
-           try {
-               val jsch = JSch()
-               session = jsch.getSession(username, host, port)
-               session!!.setPassword(password)
-               val config = java.util.Properties()
-               config["StrictHostKeyChecking"] = "no"
-               session!!.setConfig(config)
-               session!!.connect(5000)
-               channel = session!!.openChannel("sftp")
-               channel!!.connect()
-               channelSftp = channel as ChannelSftp
-               channelSftp!!.put(filepath, remoteDestinationPath)
-               channelSftp!!.exit()
-               session!!.disconnect()
-               channel!!.disconnect()
-               channelSftp!!.disconnect()
-               android.os.Handler(android.os.Looper.getMainLooper()).post {
-                   onResult(true, "Fichier uploadé avec succès !")
-               }
-           } catch (e: Exception) {
-               e.printStackTrace()
-               isConnected = false
-               android.os.Handler(android.os.Looper.getMainLooper()).post {
-                   onResult(false, "Erreur upload : ${e.message}")
-               }
-           }
-       }.start()
-   }
+    fun uploadFileviaSftp(
+        filepath: String,
+        remoteDestinationPath: String,
+        onResult: (Boolean, String) -> Unit
+    ){
+        Thread {
+            try {
+                val jsch = JSch()
+                session = jsch.getSession(username, host, port)
+                session!!.setPassword(password)
+                val config = java.util.Properties()
+                config["StrictHostKeyChecking"] = "no"
+                session!!.setConfig(config)
+                session!!.connect(5000)
+                channel = session!!.openChannel("sftp")
+                channel!!.connect()
+                channelSftp = channel as ChannelSftp
+                channelSftp!!.put(filepath, remoteDestinationPath)
+                channelSftp!!.exit()
+                session!!.disconnect()
+                channel!!.disconnect()
+                channelSftp!!.disconnect()
+                android.os.Handler(android.os.Looper.getMainLooper()).post {
+                    onResult(true, "Fichier uploadé avec succès !")
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                isConnected = false
+                android.os.Handler(android.os.Looper.getMainLooper()).post {
+                    onResult(false, "Erreur upload : ${e.message}")
+                }
+            }
+        }.start()
+    }
+    fun importDatabaseFromServer(context: Context) {
+        Thread {
+            try {
+                val jsch = JSch()
+                val session = jsch.getSession(username, host, port)
+                session.setPassword(password)
+                session.setConfig("StrictHostKeyChecking", "no")
+                session.connect()
+
+                val channel = session.openChannel("sftp") as ChannelSftp
+                channel.connect()
+
+
+                val localDbFile = File(context.getDatabasePath("prezzapp_database.db").absolutePath)
+
+                // Chemin du fichier distant (sur le serveur)
+                val remotePath = "/data/prezzapp_backup.db"
+
+                // Téléchargement depuis le serveur vers le chemin local
+                channel.get(remotePath, localDbFile.absolutePath)
+
+                Log.d("SFTP", "Base importée avec succès depuis le serveur.")
+
+                channel.disconnect()
+                session.disconnect()
+            } catch (e: Exception) {
+                Log.e("SFTP", "Erreur pendant l'import : ${e.message}")
+            }
+        }.start()
+    }
 
 
 }
