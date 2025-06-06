@@ -7,9 +7,11 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
 
-@Database(entities = [User::class], version = 1)
+@Database(entities = [User::class, Cours::class, Presence::class ], version = 1)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
+    abstract fun coursDao(): CoursDao
+    abstract fun presenceDao(): PresenceDao
 
     companion object {
         @Volatile
@@ -20,7 +22,7 @@ abstract class AppDatabase : RoomDatabase() {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     AppDatabase::class.java,
-                    "prezzapp_database"
+                    "prezzapp_database.db"
                 )
                     .addCallback(object : RoomDatabase.Callback() {
                         override fun onCreate(db: SupportSQLiteDatabase) {
