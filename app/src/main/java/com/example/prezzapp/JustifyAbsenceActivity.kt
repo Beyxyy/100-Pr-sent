@@ -1,10 +1,10 @@
-// src/main/java/com/example/prezzapp/JustifyAbsenceActivity.kt
 package com.example.prezzapp
 
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -16,6 +16,7 @@ class JustifyAbsenceActivity : AppCompatActivity() {
     private lateinit var binding: ActivityJustifyAbsenceBinding
     private var selectedAbsence: Absence? = null
     private var selectedFileUri: Uri? = null
+    private var userRole: String = "student"
 
     private val pickFileLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
@@ -34,6 +35,8 @@ class JustifyAbsenceActivity : AppCompatActivity() {
         binding = ActivityJustifyAbsenceBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        userRole = intent.getStringExtra("user_role") ?: "student"
+
         selectedAbsence = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
             intent.getSerializableExtra("selected_absence", Absence::class.java)
         } else {
@@ -42,14 +45,26 @@ class JustifyAbsenceActivity : AppCompatActivity() {
         }
 
         displayAbsenceDetails()
-        setupFileUpload()
+
+        if (userRole == "student") {
+            setupFileUpload()
+        } else {
+            // Désactive les éléments de justification pour les profs
+            binding.cardUploadJustification.visibility = View.GONE
+            binding.btnSelectFile.visibility = View.GONE
+        }
     }
 
     private fun displayAbsenceDetails() {
         selectedAbsence?.let { absence ->
             binding.tvDetailCourseDate.text = "${absence.courseName} - ${absence.date}"
-            binding.tvDetailProfessor.text = "${absence.professorName}"
-            binding.tvMessageAbsence.text = "Votre absence en ${absence.courseName} le ${absence.date} n'est pas justifiée."
+            binding.tvDetailProfessor.text = absence.professorName
+
+            binding.tvMessageAbsence.text = if (userRole == "teacher") {
+                "Cette absence est justifiée.\nVoici les informations fournies par l'élève."
+            } else {
+                "Votre absence en ${absence.courseName} le ${absence.date} n'est pas justifiée."
+            }
         } ?: run {
             Toast.makeText(this, "Erreur : Absence non trouvée.", Toast.LENGTH_SHORT).show()
             finish()
@@ -87,7 +102,6 @@ class JustifyAbsenceActivity : AppCompatActivity() {
                     Toast.makeText(this, "Justificatif envoyé et absence justifiée !", Toast.LENGTH_LONG).show()
                     finish()
                 }, 2000)
-
             }
         } ?: run {
             Toast.makeText(this, "Veuillez sélectionner un fichier d'abord.", Toast.LENGTH_SHORT).show()

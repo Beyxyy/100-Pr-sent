@@ -36,6 +36,7 @@ class StudentDashboardActivity : AppCompatActivity() {
             if (!absence.isJustified) {
                 val intent = Intent(this, JustifyAbsenceActivity::class.java).apply {
                     putExtra("selected_absence", absence)
+                    putExtra("user_role", "student")
                 }
                 startActivity(intent)
             }

@@ -46,6 +46,14 @@
             android:name=".TeacherDashboardActivity"
             android:exported="true">
         </activity>
+        <activity
+            android:name=".ViewJustificatifTeacherActivity"
+            android:exported="true"
+            android:parentActivityName=".TeacherDashboardActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".TeacherDashboardActivity" />
+        </activity>
 
     </application>
 </manifest>
