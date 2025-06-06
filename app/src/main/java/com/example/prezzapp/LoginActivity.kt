@@ -33,11 +33,11 @@ class LoginActivity : Activity() {
                 presenceDao.deleteAll()
 
                 val coursList = listOf(
-                    Cours(0, "Joel Dion", "01/01/2025", "8h-10h", "CM", "1A", "IR"),
-                    Cours(0, "Luc Bernard", "02/01/2025", "10h-12h", "TP", "1A", "IR"),
-                    Cours(0, "Julie Petit", "03/01/2025", "13h-15h", "TD", "1A", "IR"),
-                    Cours(0, "Jean Lemoine", "04/01/2025", "15h-17h", "CM", "2A", "IR"),
-                    Cours(0, "Sophie Marchand", "05/01/2025", "17h-19h", "CM", "3A", "IR")
+                    Cours(0, "Joel Dion", "Mathématiques", "01/01/2025", "8h-10h", "CM", "1A", "IR"),
+                    Cours(0, "Luc Bernard", "Informatique", "02/01/2025", "10h-12h", "TP", "1A", "IR"),
+                    Cours(0, "Julie Petit", "Physique", "03/01/2025", "13h-15h", "TD", "1A", "IR"),
+                    Cours(0, "Jean Lemoine", "Chimie", "04/01/2025", "15h-17h", "CM", "2A", "IR"),
+                    Cours(0, "Sophie Marchand", "Biologie", "05/01/2025", "17h-19h", "CM", "3A", "IR")
                 )
                 coursList.forEach { coursDao.insert(it) }
 
@@ -85,7 +85,9 @@ class LoginActivity : Activity() {
                     if (user != null) {
                         Toast.makeText(this, "Bienvenue ${user.name}", Toast.LENGTH_SHORT).show()
                         val intent = when (user.status) {
-                            Status.TEACHER -> Intent(this, TeacherDashboardActivity::class.java)
+                            Status.TEACHER -> Intent(this, TeacherDashboardActivity::class.java).apply {
+                                putExtra("prof_login", user.login)
+                            }
                             Status.STUDENT -> Intent(this, StudentDashboardActivity::class.java).apply {
                                 putExtra("user_id", user.id)
                             }

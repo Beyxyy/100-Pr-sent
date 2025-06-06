@@ -34,7 +34,7 @@ class MainActivity : ComponentActivity() {
             }
         }
 
-        val sftpConnection : SftpConnection = SftpConnection.getInstance()
+        val sftpConnection = SftpConnection.getInstance()
         sftpConnection.testSSHConnection { success, message ->
             if (success) {
                 Log.d("SSH", "Connection successful: $message")
@@ -43,46 +43,50 @@ class MainActivity : ComponentActivity() {
             }
         }
 
-        val db2 = AppDatabase.getDatabase(this)
-        val userDao = db2.userDao()
-        val presenceDao = db2.presenceDao()
-        val coursDao = db2.coursDao()
+        val db = AppDatabase.getDatabase(this)
+        val userDao = db.userDao()
+        val coursDao = db.coursDao()
 
         Thread {
+            coursDao.deleteAll()
+            userDao.deleteAll()
+
             val cours = Cours(
                 id = 0,
-                prof = "1",
+                prof = "Joel Dion",
+                nomcours = "Mathématiques",
                 jour = "15/06",
                 heure = "10h",
                 groupe = "CM",
                 annee = "1A",
-                spe = "IR",
+                spe = "IR"
             )
-            coursDao.deleteAll()
             coursDao.insert(cours)
 
-            val COURS = coursDao.getAll()
-            for (c in COURS) {
-                Log.d("DB", "ID: ${c.id}, spe: ${c.spe}")
-            }
-            userDao.deleteAll()
             val user = User(
-                id = 0, name = "Alice", password = "password123",
+                id = 0,
+                name = "Alice",
+                login = "alice.bertrand@uha.fr",
+                password = "password123",
                 td = "td1",
                 tp = "tp1",
                 annee = "1A",
                 spe = "IR",
-                status = Status.STUDENT,
-                login = "alice.bertrand@uha.fr"
+                status = Status.STUDENT
             )
             userDao.insert(user)
 
-            val users = userDao.getAll()
-            for (u in users) {
-                Log.d("DB", "Nom: ${u.name}, Statut: ${u.status}")
+            val allCours = coursDao.getAll()
+            val allUsers = userDao.getAll()
+
+            allCours.forEach {
+                Log.d("DB", "Cours: ${it.nomcours}, Prof: ${it.prof}")
+            }
+
+            allUsers.forEach {
+                Log.d("DB", "User: ${it.name}, Statut: ${it.status}")
             }
         }.start()
-
     }
 }
 
@@ -101,4 +105,3 @@ fun GreetingPreview() {
         Greeting("Android")
     }
 }
-

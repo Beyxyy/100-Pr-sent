@@ -61,7 +61,7 @@ class StudentDashboardActivity : AppCompatActivity() {
                     cours?.let {
                         Absence(
                             id = presence.id.toString(),
-                            courseName = it.prof,
+                            courseName = it.nomcours,      // ✅ correction ici
                             date = it.jour,
                             professorName = it.prof,
                             isJustified = presence.estJustifie
