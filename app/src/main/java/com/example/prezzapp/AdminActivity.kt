@@ -13,27 +13,33 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import com.example.prezzapp.components.HomeContainer
 import com.example.prezzapp.components.Header
-
+import com.example.prezzapp.service.AdminService
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
 
 class AdminActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContent {
-            PrezzAppTheme {
-                MyApp(modifier = Modifier.fillMaxSize())
+        val adminService = AdminService(this)
+        lifecycleScope.launch {
+            adminService.initData() // Initialise la base de données en arrière-plan
+            setContent {
+                PrezzAppTheme {
+                    MyApp(modifier = Modifier.fillMaxSize(), this@AdminActivity)
+                }
             }
         }
     }
 }
 
 @Composable
-fun MyApp(modifier: Modifier = Modifier) {
+fun MyApp(modifier: Modifier = Modifier, activity: ComponentActivity) {
     Surface(
         modifier = modifier,
         color = MaterialTheme.colorScheme.background
     ) {
-        Navigation()
+        Navigation(activity = activity)
 
     }
 }

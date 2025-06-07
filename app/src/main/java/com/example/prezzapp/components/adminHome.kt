@@ -1,5 +1,6 @@
 package com.example.prezzapp.components
 
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -10,24 +11,31 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.prezzapp.model.Presence
 import com.example.prezzapp.components.Header
+import com.example.prezzapp.model.Absence
+import com.example.prezzapp.service.AdminService
 
 @Composable
-fun HomeContainer(modifier: Modifier = Modifier, navController: NavController) {
+fun HomeContainer(modifier: Modifier = Modifier, navController: NavController, activity : ComponentActivity) {
 
     var search by remember {
         mutableStateOf("Chercher un étudiant")
     }
+    var absenceNotJustified by remember { mutableStateOf<List<Absence>>(emptyList()) }
+    LaunchedEffect(Unit) {
+        absenceNotJustified = AdminService(activity).getAbsencesNotJustified()
+    }
 
-    val absenceNotJustified : List<Presence> = emptyList()
     Header()
     Column (
         verticalArrangement = Arrangement.Center,
@@ -42,8 +50,8 @@ fun HomeContainer(modifier: Modifier = Modifier, navController: NavController) {
         Column(
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ){
-            for (i: Int in intArrayOf(1,2,3,4)){
-                absenceComponent(i, navController)
+            for (absence: Absence in absenceNotJustified){
+                absenceComponent(absence, navController)
             }
         }
 
