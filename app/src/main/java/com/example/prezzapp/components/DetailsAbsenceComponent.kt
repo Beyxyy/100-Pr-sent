@@ -58,10 +58,18 @@ fun DetailsAbscenceComponent(id : Int = 1, modifier: Modifier = Modifier, navCon
             }
         }
         Row {
-            Button {
-                onClick = {
-                    var s
-                }
+
+            Button(
+                onClick = { /*TODO*/ },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(30.dp),
+                colors = androidx.compose.material3.ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFF4CAF50),
+                    contentColor = Color.White
+                )
+            ) {
+                Text(text = "Télécharger le justificatif d'absence")
             }
         }
     }
