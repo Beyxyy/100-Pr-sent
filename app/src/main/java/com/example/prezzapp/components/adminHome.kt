@@ -26,7 +26,7 @@ import com.example.prezzapp.model.Absence
 import com.example.prezzapp.service.AdminService
 
 @Composable
-fun HomeContainer(modifier: Modifier = Modifier, navController: NavController, activity : ComponentActivity) {
+fun HomeContainer(modifier: Modifier = Modifier, navController: NavController, activity: ComponentActivity) {
 
     var search by remember {
         mutableStateOf("Chercher un étudiant")
@@ -44,6 +44,9 @@ fun HomeContainer(modifier: Modifier = Modifier, navController: NavController, a
             .fillMaxWidth()
             .padding(horizontal= 30.dp)
     ){
+        Text(
+            text = "bonjour admin",
+        )
        Text(
             text = "Justificatifs à vérifier"
         )

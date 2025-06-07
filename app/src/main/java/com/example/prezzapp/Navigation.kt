@@ -10,6 +10,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.prezzapp.components.DetailsAbscenceComponent
 import com.example.prezzapp.components.HomeContainer
+import com.example.prezzapp.components.UserDetails
 
 
 @Composable
@@ -20,6 +21,7 @@ fun Navigation(modifier: Modifier = Modifier, activity: ComponentActivity) {
         composable(route= Screen.MainAdminScreen.route) {
             HomeContainer(navController = navController, activity = activity)
         }
+
         composable(
             route = Screen.JustifAdminScreen.route +"/{id}",
             arguments = listOf(
@@ -29,7 +31,19 @@ fun Navigation(modifier: Modifier = Modifier, activity: ComponentActivity) {
                 }
             )
         ){entry ->
-          DetailsAbscenceComponent(navController = navController,  id = entry.arguments!!.getInt("id") )
+          DetailsAbscenceComponent(navController = navController,  id = entry.arguments!!.getInt("id"), activity = activity)
+        }
+
+        composable(
+            route = Screen.DetailsUserAdmin.route +"/{id}",
+            arguments = listOf(
+                navArgument("id"){
+                    type = NavType.IntType
+                    nullable = false
+                }
+            )
+        ){entry ->
+            UserDetails(navController = navController,  id = entry.arguments!!.getInt("id"), activity  = activity)
         }
     }
 }

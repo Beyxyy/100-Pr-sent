@@ -1,15 +1,12 @@
 package com.example.prezzapp.service
 
 import androidx.activity.ComponentActivity
-import androidx.annotation.WorkerThread
 import com.example.prezzapp.model.Absence
 import com.example.prezzapp.model.Cours
-import com.example.prezzapp.model.Presence
 import com.example.prezzapp.model.PresenceDao
 import com.example.prezzapp.model.Status
 import com.example.prezzapp.model.User
 import com.example.prezzapp.model.UserDao
-import kotlin.concurrent.thread
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -24,12 +21,16 @@ class AdminService : Service {
         presenceDao = dbInstance.presenceDao()
     }
 
-    @WorkerThread
+
     suspend fun getAbsencesNotJustified(): List<Absence> = withContext(Dispatchers.IO) {
         presenceDao.getAllAbsencesUnJustified()
     }
 
-    @WorkerThread
+    suspend fun getAbsenceById(id: Int): Absence? = withContext(Dispatchers.IO) {
+        presenceDao.getAbsenceByIdAdmin(id)
+    }
+
+
     suspend fun initData() {
         withContext(Dispatchers.IO) {
             val coursList = listOf(
@@ -123,6 +124,14 @@ class AdminService : Service {
                 ),
             )
         }
+    }
+
+    suspend fun getUserById(id: Int): User? = withContext(Dispatchers.IO) {
+       userDao.getById(id)
+    }
+
+    suspend fun getAbsenceByUserId(id: Int): List<Absence> = withContext(Dispatchers.IO) {
+        presenceDao.getAbsenceByUserId(id)
     }
 }
 

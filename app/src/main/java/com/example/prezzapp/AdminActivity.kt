@@ -7,12 +7,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import com.example.prezzapp.ui.theme.PrezzAppTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import com.example.prezzapp.components.HomeContainer
-import com.example.prezzapp.components.Header
 import com.example.prezzapp.service.AdminService
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
