@@ -57,6 +57,7 @@ class MainActivity : ComponentActivity() {
                 groupe = "CM",
                 annee = "1A",
                 spe = "IR",
+                matiere= "Programmation Avancée",
             )
             coursDao.deleteAll()
             coursDao.insert(cours)

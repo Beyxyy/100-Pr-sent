@@ -3,6 +3,7 @@ package com.example.prezzapp.service
 import androidx.activity.ComponentActivity
 import com.example.prezzapp.model.Absence
 import com.example.prezzapp.model.Cours
+import com.example.prezzapp.model.Presence
 import com.example.prezzapp.model.PresenceDao
 import com.example.prezzapp.model.Status
 import com.example.prezzapp.model.User
@@ -34,15 +35,14 @@ class AdminService : Service {
     suspend fun initData() {
         withContext(Dispatchers.IO) {
             val coursList = listOf(
-                Cours(0, "Joel Dion", "01/01/2025", "8h-10h", "CM", "1A", "IR"),
-                Cours(0, "Luc Bernard", "02/01/2025", "10h-12h", "TP", "1A", "IR"),
-                Cours(0, "Julie Petit", "03/01/2025", "13h-15h", "TD", "1A", "IR"),
-                Cours(0, "Jean Lemoine", "04/01/2025", "15h-17h", "CM", "2A", "IR"),
-                Cours(0, "Sophie Marchand", "05/01/2025", "17h-19h", "CM", "3A", "IR")
+                Cours(0, "Joel Dion", "01/01/2025", "8h-10h", "CM", "1A", "IR", "Mathématiques"),
+                Cours(0, "Luc Bernard", "02/01/2025", "10h-12h", "TP", "1A", "IR", "Physique"),
+                Cours(0, "Julie Petit", "03/01/2025", "13h-15h", "TD", "1A", "IR", "Chimie"),
+                Cours(0, "Jean Lemoine", "04/01/2025", "15h-17h", "CM", "2A", "IR", "Biologie"),
+                Cours(0, "Sophie Marchand", "05/01/2025", "17h-19h", "CM", "3A", "IR", "Sciences Sociales"),
             )
             coursList.forEach { coursDao.insert(it) }
 
-            val allCours = coursDao.getAll()
 
             val users = listOf(
                 User(
@@ -123,7 +123,18 @@ class AdminService : Service {
                     Status.STUDENT
                 ),
             )
+            users.forEach { userDao.insert(it) }
+
+            val presence =Presence(
+                    0,
+                    1,
+                    1,
+                    false,
+                    "CM",
+                    false)
+            presenceDao.insert(presence)
         }
+
     }
 
     suspend fun getUserById(id: Int): User? = withContext(Dispatchers.IO) {

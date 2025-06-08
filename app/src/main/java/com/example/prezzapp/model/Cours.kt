@@ -12,5 +12,6 @@ data class Cours(
     val groupe : String,
     val annee: String,
     val spe: String,
+    val matiere: String,
 
 )
