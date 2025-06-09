@@ -13,6 +13,26 @@ class LoginActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Vérifie si un utilisateur est déjà connecté
+        val sharedPref = getSharedPreferences("user_prefs", MODE_PRIVATE)
+        val savedUserId = sharedPref.getInt("user_id", -1)
+        val savedStatus = sharedPref.getString("status", null)
+
+        if (savedUserId != -1 && savedStatus != null) {
+            val intent = when (Status.valueOf(savedStatus)) {
+                Status.TEACHER -> Intent(this, TeacherDashboardActivity::class.java).apply {
+                    putExtra("prof_login", "inutilisé") // à adapter si besoin
+                }
+                Status.STUDENT -> Intent(this, StudentDashboardActivity::class.java).apply {
+                    putExtra("user_id", savedUserId)
+                }
+            }
+            startActivity(intent)
+            finish()
+            return
+        }
+
         setContentView(R.layout.activity_login)
 
         val emailInput = findViewById<EditText>(R.id.editTextEmail)
@@ -22,6 +42,7 @@ class LoginActivity : Activity() {
         val db = AppDatabase.getDatabase(this)
         val authService = AuthService(this)
 
+        // Initialisation de la base de données (si vide)
         Thread {
             val coursDao = db.coursDao()
             val userDao = db.userDao()
@@ -74,6 +95,7 @@ class LoginActivity : Activity() {
             }
         }.start()
 
+        // Bouton de connexion
         loginButton.setOnClickListener {
             val email = emailInput.text.toString().trim()
             val password = passwordInput.text.toString().trim()
@@ -83,6 +105,7 @@ class LoginActivity : Activity() {
 
                 runOnUiThread {
                     if (user != null) {
+                        saveLoggedInUser(user.id, user.status)
                         Toast.makeText(this, "Bienvenue ${user.name}", Toast.LENGTH_SHORT).show()
                         val intent = when (user.status) {
                             Status.TEACHER -> Intent(this, TeacherDashboardActivity::class.java).apply {
@@ -101,6 +124,16 @@ class LoginActivity : Activity() {
                     }
                 }
             }.start()
+        }
+    }
+
+    // Fonction pour enregistrer l'utilisateur connecté dans SharedPreferences
+    private fun saveLoggedInUser(userId: Int, status: Status) {
+        val sharedPref = getSharedPreferences("user_prefs", MODE_PRIVATE)
+        with(sharedPref.edit()) {
+            putInt("user_id", userId)
+            putString("status", status.name)
+            apply()
         }
     }
 }

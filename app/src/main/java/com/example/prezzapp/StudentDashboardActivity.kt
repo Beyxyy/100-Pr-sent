@@ -3,14 +3,13 @@ package com.example.prezzapp
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.prezzapp.adapters.AbsenceAdapter
 import com.example.prezzapp.data.Absence
 import com.example.prezzapp.databinding.ActivityStudentDashboardBinding
 import com.example.prezzapp.model.AppDatabase
 
-class StudentDashboardActivity : AppCompatActivity() {
+class StudentDashboardActivity : BaseActivity() {
 
     private lateinit var binding: ActivityStudentDashboardBinding
     private lateinit var absenceAdapter: AbsenceAdapter
@@ -31,6 +30,11 @@ class StudentDashboardActivity : AppCompatActivity() {
 
         binding.btnVoirPlus.setOnClickListener {
             loadNextAbsences()
+        }
+
+        // ✅ Bouton déconnexion
+        binding.btnLogout.setOnClickListener {
+            logout()
         }
     }
 
@@ -61,7 +65,7 @@ class StudentDashboardActivity : AppCompatActivity() {
                     cours?.let {
                         Absence(
                             id = presence.id.toString(),
-                            courseName = it.nomcours,      // ✅ correction ici
+                            courseName = it.nomcours,
                             date = it.jour,
                             professorName = it.prof,
                             isJustified = presence.estJustifie
@@ -97,4 +101,6 @@ class StudentDashboardActivity : AppCompatActivity() {
         allAbsences.clear()
         loadAbsencesFromDatabase()
     }
+
+
 }

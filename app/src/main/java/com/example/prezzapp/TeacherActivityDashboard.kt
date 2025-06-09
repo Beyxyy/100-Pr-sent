@@ -10,7 +10,7 @@ import com.example.prezzapp.data.Absence
 import com.example.prezzapp.databinding.ActivityTeacherDashboardBinding
 import com.example.prezzapp.model.AppDatabase
 
-class TeacherDashboardActivity : AppCompatActivity() {
+class TeacherDashboardActivity :  BaseActivity() {
 
     private lateinit var binding: ActivityTeacherDashboardBinding
     private lateinit var absenceAdapter: AbsenceAdapterTeacher
@@ -23,6 +23,10 @@ class TeacherDashboardActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityTeacherDashboardBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        binding.btnLogout.setOnClickListener {
+            logout()  // appel direct à celle de BaseActivity
+        }
+
 
         profLogin = intent.getStringExtra("prof_login")
 

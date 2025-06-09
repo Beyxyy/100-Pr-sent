@@ -12,7 +12,7 @@ import com.example.prezzapp.data.Absence
 import com.example.prezzapp.databinding.ActivityJustifyAbsenceBinding
 import com.example.prezzapp.model.AppDatabase
 
-class JustifyAbsenceActivity : AppCompatActivity() {
+class JustifyAbsenceActivity :BaseActivity() {
 
     private lateinit var binding: ActivityJustifyAbsenceBinding
     private var selectedAbsence: Absence? = null
@@ -35,6 +35,9 @@ class JustifyAbsenceActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityJustifyAbsenceBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        binding.btnLogout.setOnClickListener {
+            logout()
+        }
 
         userRole = intent.getStringExtra("user_role") ?: "student"
 
