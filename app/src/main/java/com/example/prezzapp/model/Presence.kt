@@ -14,7 +14,7 @@ data class Presence(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val userId: Int,
     val coursId: Int,
-    val estJustifie: Boolean,
+    var estJustifie: Boolean,
     val lien: String?,
     val estPresent: Boolean
 )

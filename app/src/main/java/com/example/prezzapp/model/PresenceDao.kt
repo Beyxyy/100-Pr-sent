@@ -51,6 +51,9 @@ interface PresenceDao {
     JOIN cours ON cours.id = presence.coursId
     WHERE user.id = :id
     """)
-    fun getAbsenceByUserId(id : Int) :  List<Absence>
+    fun geAbsenceByUserId(id : Int) :  List<Absence>
+
+    @Query("Update Presence SET estJustifie = true WHERE id = :id")
+    fun justifyAbscence(id: Int)
 
 }

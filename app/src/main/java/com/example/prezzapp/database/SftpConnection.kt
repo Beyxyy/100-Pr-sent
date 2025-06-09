@@ -1,5 +1,6 @@
 package com.example.prezzapp.database
 
+import android.os.Environment
 import com.jcraft.jsch.*
 import java.io.File
 import java.io.FileOutputStream
@@ -60,7 +61,6 @@ class SftpConnection {
          * Télécharge un fichier via SFTP
          */
         fun downloadFileViaSFTP(
-            context: android.content.Context,
             localFileName : String,
             remoteFilePath : String,
             onResult: (Boolean, String) -> Unit
@@ -76,7 +76,7 @@ class SftpConnection {
                     session.connect(5000)
                     val channel = session.openChannel("sftp") as ChannelSftp
                     channel.connect()
-                    val localFile = File(context.filesDir, localFileName)
+                    val localFile = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), localFileName)
                     channel.get(remoteFilePath, FileOutputStream(localFile))
                     channel.disconnect()
                     session.disconnect()

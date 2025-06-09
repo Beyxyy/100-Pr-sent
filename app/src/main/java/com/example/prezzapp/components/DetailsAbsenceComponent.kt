@@ -22,11 +22,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import com.example.prezzapp.Screen
 import com.example.prezzapp.model.Absence
 import com.example.prezzapp.model.Presence
 import com.example.prezzapp.service.AdminService
+import kotlinx.coroutines.launch
 
 @Composable
 fun DetailsAbscenceComponent(id : Int = 1, modifier: Modifier = Modifier, navController: NavController, activity: ComponentActivity) {
@@ -77,11 +79,12 @@ fun DetailsAbscenceComponent(id : Int = 1, modifier: Modifier = Modifier, navCon
             }
         }
         Column {
-
-
-
             Button(
-                onClick = { /*TODO*/ },
+                onClick = {
+                    activity.lifecycleScope.launch {
+                        AdminService(activity).downloadJustitf(absence?.presence?.lien ?: "", absence!!)
+                    }
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(30.dp),
@@ -109,9 +112,10 @@ fun DetailsAbscenceComponent(id : Int = 1, modifier: Modifier = Modifier, navCon
             }
             Button(
                 onClick = {
-                    // Handle the justification logic here
-                    // For example, you might want to call a service to justify the absence
-                },
+                    activity.lifecycleScope.launch {
+                        AdminService(activity).justifyAbsence(absence?.presence!!.id)
+                        navController.navigate(Screen.MainAdminScreen.route)
+                    }                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(30.dp),

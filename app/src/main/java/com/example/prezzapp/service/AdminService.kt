@@ -1,6 +1,7 @@
 package com.example.prezzapp.service
 
 import androidx.activity.ComponentActivity
+import com.example.prezzapp.database.SftpConnection
 import com.example.prezzapp.model.Absence
 import com.example.prezzapp.model.Cours
 import com.example.prezzapp.model.Presence
@@ -46,7 +47,7 @@ class AdminService : Service {
 
             val users = listOf(
                 User(
-                    101,
+                    0,
                     "joel.dion@uha.fr",
                     "Joel Dion",
                     "azerty1",
@@ -57,7 +58,7 @@ class AdminService : Service {
                     Status.TEACHER
                 ),
                 User(
-                    102,
+                    0,
                     "jean.lemoine@uha.fr",
                     "Jean Lemoine",
                     "azerty2",
@@ -68,7 +69,7 @@ class AdminService : Service {
                     Status.TEACHER
                 ),
                 User(
-                    103,
+                    0,
                     "luc.bernard@uha.fr",
                     "Luc Bernard",
                     "azerty3",
@@ -79,7 +80,7 @@ class AdminService : Service {
                     Status.TEACHER
                 ),
                 User(
-                    104,
+                    0,
                     "sophie.marchand@uha.fr",
                     "Sophie Marchand",
                     "azerty4",
@@ -90,7 +91,7 @@ class AdminService : Service {
                     Status.TEACHER
                 ),
                 User(
-                    105,
+                    0,
                     "julie.petit@uha.fr",
                     "Julie Petit",
                     "azerty5",
@@ -101,7 +102,7 @@ class AdminService : Service {
                     Status.TEACHER
                 ),
                 User(
-                    1,
+                    0,
                     "amine.martin@uha.fr",
                     "Amine Martin",
                     "pass01",
@@ -112,7 +113,7 @@ class AdminService : Service {
                     Status.STUDENT
                 ),
                 User(
-                    2,
+                    0,
                     "lina.nguyen@uha.fr",
                     "Lina Nguyen",
                     "pass02",
@@ -130,7 +131,7 @@ class AdminService : Service {
                     1,
                     1,
                     false,
-                    "CM",
+                    null,
                     false)
             presenceDao.insert(presence)
         }
@@ -142,7 +143,35 @@ class AdminService : Service {
     }
 
     suspend fun getAbsenceByUserId(id: Int): List<Absence> = withContext(Dispatchers.IO) {
-        presenceDao.getAbsenceByUserId(id)
+        presenceDao.geAbsenceByUserId(id)
     }
+
+    suspend fun justifyAbsence(id: Int) : Unit = withContext(Dispatchers.IO) {
+        try{
+            val absence = presenceDao.getAbsenceById(id)
+            if (absence != null) {
+                presenceDao.justifyAbscence(absence.id)
+            }
+        }
+        catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+    }
+
+    fun downloadJustitf(lien : String, absence : Absence ) : Unit {
+        Thread {
+            val sftpConnection : SftpConnection = SftpConnection.getInstance()
+            var localFileName = absence.user.name + "_" + absence.cours.matiere + "_" + absence.cours.jour +"_"+ absence.cours.heure + ".pdf"
+            sftpConnection.downloadFileViaSFTP(localFileName = localFileName, remoteFilePath = lien) { success, message ->
+                if (success) {
+                    // Handle successful download
+                } else {
+                    // Handle download failure
+                }
+            }
+        }
+    }
+
 }
 

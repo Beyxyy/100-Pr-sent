@@ -74,10 +74,26 @@ fun UserDetails(id : Int, navController: NavController, activity: ComponentActiv
                     text = user?.tp ?: "User not found",
                 )
             }
+            Text(
+                text = "Absences non justifiées",
+            )
             for( absence in absences) {
+                if (absence.presence.estJustifie) {
+                    continue // Skip justified absences
+                }
                 absenceComponent(absence, navController)
             }
 
+            Spacer(modifier = Modifier.width(20.dp))
+            Text(
+                text = "Absences justifiées",
+            )
+            for (absence in absences) {
+                if (!absence.presence.estJustifie) {
+                    continue // Skip non-justified absences
+                }
+                absenceComponent(absence, navController)
+            }
         }
     }
 
