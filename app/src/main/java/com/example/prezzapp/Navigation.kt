@@ -8,6 +8,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.prezzapp.components.AdminAddCours
 import com.example.prezzapp.components.DetailsAbscenceComponent
 import com.example.prezzapp.components.HomeContainer
 import com.example.prezzapp.components.UserDetails
@@ -44,6 +45,11 @@ fun Navigation(modifier: Modifier = Modifier, activity: ComponentActivity) {
             )
         ){entry ->
             UserDetails(navController = navController,  id = entry.arguments!!.getInt("id"), activity  = activity)
+        }
+
+        composable(route = Screen.AddCoursAdmin.route)
+        {
+            AdminAddCours(navController = navController, activity = activity)
         }
     }
 }

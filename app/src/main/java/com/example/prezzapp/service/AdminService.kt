@@ -173,5 +173,27 @@ class AdminService : Service {
         }
     }
 
+    suspend fun addCours(
+        nomProf: String,
+        spe: String,
+        groupe: String,
+        heure: String,
+        date: String,
+        annee: String,
+        matiere: String
+    ) = withContext(Dispatchers.IO) {
+        val cours = Cours(
+            id = 0,
+            prof = nomProf,
+            jour = date,
+            heure = heure,
+            annee = annee,
+            groupe = groupe,
+            spe = spe,
+            matiere = matiere
+        )
+        coursDao.insert(cours)
+    }
+
 }
 
