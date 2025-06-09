@@ -28,9 +28,8 @@ fun AdminAddCours(navController: NavController, activity: ComponentActivity) {
         modifier = Modifier
             .fillMaxSize()
             .fillMaxWidth()
-            .padding(horizontal = 30.dp)
     ) {
-        Header()
+
         Text(text = "Ajouter un cours")
             var nomProf by remember { mutableStateOf("") }
             var spe by remember { mutableStateOf("") }
@@ -98,9 +97,10 @@ fun AdminAddCours(navController: NavController, activity: ComponentActivity) {
                     annee = annee,
                     matiere = matiere
                 )
-            }}
+            }
+            }
             ) {
-                Text("Valider")
+                Text("Valider", modifier = Modifier.fillMaxWidth(), textAlign = androidx.compose.ui.text.style.TextAlign.Center)
             }
 
     }

@@ -1,9 +1,11 @@
 package com.example.prezzapp.components
 
 import androidx.activity.ComponentActivity
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -17,6 +19,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.prezzapp.Screen
@@ -29,51 +33,60 @@ fun HomeContainer(modifier: Modifier = Modifier, navController: NavController, a
     var search by remember {
         mutableStateOf("Chercher un étudiant")
     }
-    var absenceNotJustified by remember { mutableStateOf<List<Absence>>(emptyList()) }
-    LaunchedEffect(Unit) {
-        absenceNotJustified = AdminService(activity).getAbsencesNotJustified()
-    }
-    Column {
-    Header()
 
-    Column (
+    Column(
         modifier = Modifier
             .fillMaxSize()
             .fillMaxWidth()
-            .padding(horizontal= 30.dp)
-    ){
-        Text(
-            text = "bonjour admin",
-        )
-        Spacer(Modifier.height(20.dp))
-        Button(
-            onClick = {
-                navController.navigate(Screen.AddCoursAdmin.route)
-            }
-        ) {
-            Text(
-                text = "Ajouter un cours",
-            )
-        }
 
+    ) {
         Text(
-            text = "Justificatifs à vérifier"
+            text = "Bonjour admin, vous pouvez  : ",
         )
         Column(
-            verticalArrangement = Arrangement.spacedBy(20.dp)
-        ){
-        if (absenceNotJustified.isEmpty()) {
-            Text(
-                text = "Aucun justificatif à vérifier",
-            )
-        }
-            for (absence: Absence in absenceNotJustified){
-                absenceComponent(absence, navController)
+            Modifier
+                .fillMaxWidth()
+                .fillMaxHeight()
+        ) {
+            Button(
+                onClick = {
+                    navController.navigate(Screen.AddCoursAdmin.route)
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                Text(
+                    text = "Ajouter un cours",
+                )
             }
+
+            Button(
+                onClick = {
+                    navController.navigate(Screen.AllJustifAdminScreen.route)
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                Text(
+                    text = "Voir les justificatifs",
+                )
+            }
+
+
+            Button(
+                onClick = {
+                    navController.navigate(Screen.SearchStudent.route)
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                Text(
+                    text = "Chercher un étudiant",
+                )
+            }
+
         }
 
-    }
-    }
 
-
+    }
 }

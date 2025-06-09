@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
@@ -39,55 +40,76 @@ fun DetailsAbscenceComponent(id : Int = 1, modifier: Modifier = Modifier, navCon
     LaunchedEffect(Unit) {
         absence = AdminService(activity).getAbsenceById(id)
         if (absence == null) {
-            // Handle the case where absence is not found
             navController.navigate(Screen.MainAdminScreen.route)
         }
     }
 
-    Column (
+    Column(
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxSize()
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 30.dp),
+            horizontalArrangement = Arrangement.spacedBy(75.dp)
 
-    ){
-        Header()
-        Column{
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal= 30.dp),
-                horizontalArrangement = Arrangement.spacedBy(75.dp)
-
-            ){
-                Column {
-                    Text(
-                        text = absence?.user?.name ?: "Nom de l'étudiant",
-                    )
-                    Text(
-                        text = "abscence.date"
-                    )
-
-                }
-                Spacer(Modifier.weight(1f))
-                Box{
-                    Text(
-                        text = "Matiere",
-                        modifier  = Modifier.padding()
-                    )
-                }
+        ) {
+            Column {
+                Text(
+                    text = "Etudiant : " + (absence?.user?.name ?: "Nom de l'étudiant"),
+                )
+                Text(
+                    text = "Absent le : " + (absence?.cours?.jour + " à " + absence?.cours?.heure
+                        ?: "Date et heure"),
+                )
+                Text(
+                    text = "Matière : " + (absence?.cours?.matiere ?: "Matière"),
+                    modifier = Modifier.padding()
+                )
 
             }
+            Spacer(Modifier.weight(1f))
+
         }
+        Button(
+            onClick = {
+                navController.navigate(
+                    route = Screen.DetailsUserAdmin.withArgs(
+                        absence?.user?.id ?: 0
+                    )
+                )
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(10.dp),
+            colors = androidx.compose.material3.ButtonDefaults.buttonColors(
+                containerColor = Color(0xFFF),
+                contentColor = Color.Black
+            )
+        ) {
+            Text(
+                text = "Voir plus de détails sur l'étudiant",
+                style = androidx.compose.ui.text.TextStyle(textDecoration = androidx.compose.ui.text.style.TextDecoration.Underline)
+            )
+        }
+
+        Spacer(Modifier.height(50.dp))
+
         Column {
             Button(
                 onClick = {
                     activity.lifecycleScope.launch {
-                        AdminService(activity).downloadJustitf(absence?.presence?.lien ?: "", absence!!)
+                        AdminService(activity).downloadJustitf(
+                            absence?.presence?.lien ?: "",
+                            absence!!
+                        )
                     }
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(30.dp),
+                    .padding(10.dp),
                 colors = androidx.compose.material3.ButtonDefaults.buttonColors(
                     containerColor = Color(0xFF4CAF50),
                     contentColor = Color.White
@@ -96,37 +118,29 @@ fun DetailsAbscenceComponent(id : Int = 1, modifier: Modifier = Modifier, navCon
                 Text(text = "Télécharger le justificatif d'absence")
             }
 
-            Button(
-                onClick = {
-                    navController.navigate( route= Screen.DetailsUserAdmin.withArgs(absence?.user?.id ?: 0))
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(30.dp),
-                colors = androidx.compose.material3.ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFF4CAF50),
-                    contentColor = Color.White
-                )
-            ) {
-                Text(text = "Voir plus de détails sur l'étudiant")
-            }
+
             Button(
                 onClick = {
                     activity.lifecycleScope.launch {
                         AdminService(activity).justifyAbsence(absence?.presence!!.id)
                         navController.navigate(Screen.MainAdminScreen.route)
-                    }                },
+                    }
+                },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(30.dp),
+                    .padding(10.dp),
                 colors = androidx.compose.material3.ButtonDefaults.buttonColors(
                     containerColor = Color(0xFF4CAF50),
-                    contentColor = Color.White
-                )
-            ) {
+                    contentColor = Color.White,
+                ),
+                shape = androidx.compose.material3.MaterialTheme.shapes.large,
+
+
+                ) {
                 Text(text = "Justifier l'absence")
             }
         }
     }
+
 
 }

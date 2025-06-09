@@ -131,7 +131,7 @@ class AdminService : Service {
                     1,
                     1,
                     false,
-                    null,
+                    "null",
                     false)
             presenceDao.insert(presence)
         }

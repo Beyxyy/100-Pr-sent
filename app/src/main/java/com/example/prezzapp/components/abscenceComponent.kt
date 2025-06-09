@@ -30,11 +30,6 @@ fun absenceComponent(absence : Absence, navController: NavController){
         modifier = Modifier
             .padding(5.dp)
             .background(Color.White)
-            .border(
-                width = 1.dp,
-                color = Color(0, 0, 0, 51),
-                shape = Shapes().small
-            )
     ) {
 
         Row {
