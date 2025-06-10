@@ -9,5 +9,7 @@ interface UserDao {
     @Query("Delete from User") fun deleteAll() : Unit
     @Query("SELECT * FROM User") fun getAll(): List<User>
     @Query("SELECT * FROM User WHERE id = :userId") fun getById(userId: Int): User?
+    @Query("SELECT * FROM User WHERE name LIKE :query AND status = 'STUDENT'")
+    suspend fun searchByName(query: String): List<User>
 }
 

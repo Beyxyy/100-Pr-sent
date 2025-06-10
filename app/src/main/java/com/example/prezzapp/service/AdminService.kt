@@ -23,6 +23,14 @@ class AdminService : Service {
         presenceDao = dbInstance.presenceDao()
     }
 
+    suspend fun searchStudentsByName(query: String): List<User> {
+        return withContext(Dispatchers.IO) {
+            // Implement actual search logic using your DAO
+            // Example using Room:
+            userDao.searchByName("%$query%")
+        }
+    }
+
 
     suspend fun getAbsencesNotJustified(): List<Absence> = withContext(Dispatchers.IO) {
         presenceDao.getAllAbsencesUnJustified()
