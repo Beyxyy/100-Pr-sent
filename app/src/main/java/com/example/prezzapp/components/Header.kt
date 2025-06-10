@@ -16,11 +16,14 @@ fun Header() {
     Row(
         horizontalArrangement = Arrangement.Center,
         modifier = Modifier
-            .padding(75.dp)
             .fillMaxWidth()
-    ){
+            .padding(vertical = 24.dp)  // Reduced padding to vertical only
+    ) {
         Text(
-            text = "Prezzap"
+            text = "PrezzApp",
+            style = androidx.compose.material3.MaterialTheme.typography.headlineMedium,
+            color = androidx.compose.material3.MaterialTheme.colorScheme.primary,
+            modifier = Modifier.padding(horizontal = 16.dp)
         )
     }
 }
