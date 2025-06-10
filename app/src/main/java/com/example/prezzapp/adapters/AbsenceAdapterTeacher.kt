@@ -9,13 +9,13 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.prezzapp.R
+import com.example.prezzapp.ViewJustificatifTeacherActivity
 import com.example.prezzapp.data.Absence
 import com.example.prezzapp.databinding.ItemAbsenceTeacherBinding
-import com.example.prezzapp.ViewJustificatifTeacherActivity  // ✅ Ajouté
 
 class AbsenceAdapterTeacher(
     private val context: Context,
-    private val absences: List<Absence>,
+    private val absences: MutableList<Absence>,
     private val onAbsenceClick: (Absence) -> Unit
 ) : RecyclerView.Adapter<AbsenceAdapterTeacher.AbsenceViewHolder>() {
 
@@ -24,28 +24,31 @@ class AbsenceAdapterTeacher(
 
         fun bind(absence: Absence) {
             binding.tvCourseDate.text = "${absence.courseName} - ${absence.date}"
-            binding.tvStudentName.text = "Élève : ${absence.professorName}"  // Nom élève
-            binding.tvJustifiedStatus.text = if (absence.isJustified) "Justifié" else "Non justifié"
+            binding.tvStudentName.text = "Élève : ${absence.professorName}"
+
+            val justified = absence.isJustified
+            binding.tvJustifiedStatus.text = if (justified) "Justifié" else "Non justifié"
             binding.tvJustifiedStatus.setTextColor(Color.WHITE)
             binding.tvJustifiedStatus.background = ContextCompat.getDrawable(
                 context,
-                if (absence.isJustified) R.drawable.rounded_green_background else R.drawable.rounded_orange_background
+                if (justified) R.drawable.rounded_green_background else R.drawable.rounded_orange_background
             )
 
             binding.cardAbsence.setCardBackgroundColor(
                 ContextCompat.getColor(
                     context,
-                    if (absence.isJustified) R.color.green_justified else R.color.orange_not_justified
+                    if (justified) R.color.green_justified else R.color.orange_not_justified
                 )
             )
 
-            if (absence.isJustified) {
+            if (justified) {
                 binding.btnVoirJustificatif.visibility = View.VISIBLE
                 binding.btnVoirJustificatif.setOnClickListener {
                     val intent = Intent(context, ViewJustificatifTeacherActivity::class.java)
                     intent.putExtra("selected_absence", absence)
                     context.startActivity(intent)
                 }
+                binding.root.setOnClickListener(null)
             } else {
                 binding.btnVoirJustificatif.visibility = View.GONE
                 binding.root.setOnClickListener {
@@ -56,7 +59,8 @@ class AbsenceAdapterTeacher(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbsenceViewHolder {
-        val binding = ItemAbsenceTeacherBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val inflater = LayoutInflater.from(parent.context)
+        val binding = ItemAbsenceTeacherBinding.inflate(inflater, parent, false)
         return AbsenceViewHolder(binding)
     }
 
@@ -65,4 +69,10 @@ class AbsenceAdapterTeacher(
     }
 
     override fun getItemCount(): Int = absences.size
+
+    fun updateData(newAbsences: List<Absence>) {
+        absences.clear()
+        absences.addAll(newAbsences)
+        notifyDataSetChanged()
+    }
 }

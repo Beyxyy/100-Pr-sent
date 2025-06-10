@@ -50,7 +50,7 @@ class TeacherDashboardActivity : AppCompatActivity() {
 
     private fun setupRecyclerView() {
         absenceAdapter = AbsenceAdapterTeacher(this, visibleAbsences) { absence ->
-            if (absence.isJustified) {
+            if (!absence.isJustified) {
                 startActivity(Intent(this, JustifyAbsenceActivity::class.java).apply {
                     putExtra("selected_absence", absence)
                     putExtra("user_role", "teacher")
@@ -90,7 +90,11 @@ class TeacherDashboardActivity : AppCompatActivity() {
                 }
             )
 
-            runOnUiThread { loadNextAbsences() }
+            runOnUiThread {
+                visibleAbsences.clear()
+                absenceAdapter.notifyDataSetChanged()
+                loadNextAbsences()
+            }
         }.start()
     }
 
@@ -109,6 +113,7 @@ class TeacherDashboardActivity : AppCompatActivity() {
         super.onResume()
         visibleAbsences.clear()
         allAbsences.clear()
+        absenceAdapter.notifyDataSetChanged()
         loadAbsencesFromDatabase()
     }
 }
