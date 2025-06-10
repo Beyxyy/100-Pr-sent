@@ -1,4 +1,3 @@
-// src/main/java/com/example/prezzapp/StudentDashboardActivity.kt
 package com.example.prezzapp
 
 import android.content.Intent
@@ -7,7 +6,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.prezzapp.adapters.AbsenceAdapter
-import com.example.prezzapp.data.Absence // Assurez-vous d'utiliser votre classe Absence mise à jour
+import com.example.prezzapp.data.Absence
 import com.example.prezzapp.databinding.ActivityStudentDashboardBinding
 import com.example.prezzapp.model.AppDatabase
 
@@ -45,7 +44,7 @@ class StudentDashboardActivity : AppCompatActivity() {
             } else {
                 Intent(this, JustifyAbsenceActivity::class.java).apply {
                     putExtra("selected_absence", absence)
-                    putExtra("user_role", "student") // Assurez-vous que c'est toujours "student" ici
+                    putExtra("user_role", "student")
                 }
             }
             startActivity(intent)
@@ -62,7 +61,7 @@ class StudentDashboardActivity : AppCompatActivity() {
 
             // Fetch all presences for the user
             val presences = presenceDao.getByUser(userId)
-            val coursList = coursDao.getAll() // Fetch all courses to match with presences
+            val coursList = coursDao.getAll()
 
             // Map Presence entities to Absence data class
             val absences = presences.mapNotNull { presence ->
@@ -73,21 +72,21 @@ class StudentDashboardActivity : AppCompatActivity() {
                         courseName = it.nomcours,
                         date = it.jour,
                         professorName = it.prof,
-                        isJustified = presence.estJustifie, // Correctly use estJustifie from Presence
-                        justificationLink = presence.lien // <-- PASSEZ LE LIEN ICI
+                        isJustified = presence.estJustifie,
+                        justificationLink = presence.lien
                     )
                 }
-            }.sortedByDescending { it.date } // Sort if needed, e.g., by date
+            }.sortedByDescending { it.date }
 
             runOnUiThread {
                 val oldSize = visibleAbsences.size
                 visibleAbsences.clear()
-                absenceAdapter.notifyItemRangeRemoved(0, oldSize) // Notify adapter for removal
+                absenceAdapter.notifyItemRangeRemoved(0, oldSize)
 
                 allAbsences.clear()
-                allAbsences.addAll(absences) // Populate the full list
+                allAbsences.addAll(absences)
 
-                loadNextAbsences() // Load the first page of absences
+                loadNextAbsences()
             }
 
         }.start()
@@ -106,14 +105,11 @@ class StudentDashboardActivity : AppCompatActivity() {
         visibleAbsences.addAll(nextAbsences)
         absenceAdapter.notifyItemRangeInserted(startIndex, nextAbsences.size)
 
-        // Hide "Voir plus" button if all absences are loaded
         binding.btnVoirPlus.visibility = if (visibleAbsences.size >= allAbsences.size) View.GONE else View.VISIBLE
     }
 
     override fun onResume() {
         super.onResume()
-        // Reload data from the database every time the activity comes to foreground
-        // This ensures the list is up-to-date after returning from JustifyAbsenceActivity
         loadAbsencesFromDatabase()
     }
 }

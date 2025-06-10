@@ -36,7 +36,6 @@ class AbsenceAdapter(
                 binding.tvJustifiedStatus.setTextColor(Color.WHITE)
             }
 
-            // Clic actif pour tous
             binding.root.setOnClickListener {
                 onAbsenceClick(absence)
             }

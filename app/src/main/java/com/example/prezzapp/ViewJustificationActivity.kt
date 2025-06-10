@@ -1,4 +1,3 @@
-// src/main/java/com/example/prezzapp/ViewJustificationActivity.kt
 package com.example.prezzapp
 
 import android.content.Intent
@@ -19,7 +18,6 @@ class ViewJustificationActivity : AppCompatActivity() {
         binding = ActivityViewJustificationBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Use the correct way to get SerializableExtra for targetSdkVersion 33+
         absence = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
             intent.getSerializableExtra("selected_absence", Absence::class.java)
         } else {
@@ -33,20 +31,18 @@ class ViewJustificationActivity : AppCompatActivity() {
             return
         }
 
-        setupToolbar() // Assurez-vous d'avoir une toolbar et d'appeler cette méthode
+        setupToolbar()
         displayJustification()
     }
 
     private fun setupToolbar() {
-        // Supposons que vous avez une toolbar définie dans votre layout activity_view_justification.xml
-        // et que son ID est 'toolbar'
-        setSupportActionBar(binding.toolbar) // Assurez-vous que 'binding.toolbar' existe
-        supportActionBar?.setDisplayHomeAsUpEnabled(true) // Affiche la flèche de retour
-        supportActionBar?.setDisplayShowTitleEnabled(false) // Cache le titre par défaut de la toolbar
+        setSupportActionBar(binding.toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
         binding.toolbar.setNavigationOnClickListener {
-            onBackPressedDispatcher.onBackPressed() // Gère le clic sur la flèche de retour
+            onBackPressedDispatcher.onBackPressed()
         }
-        binding.toolbarTitle.text = "Justificatif" // Optionnel: définir le titre de la toolbar
+        binding.toolbarTitle.text = "Justificatif"
     }
 
 
@@ -57,7 +53,7 @@ class ViewJustificationActivity : AppCompatActivity() {
         val justificationLink = absence?.justificationLink
 
         if (!justificationLink.isNullOrBlank()) {
-            binding.tvJustificationLink.text = "Justificatif disponible" // Ou le lien lui-même si vous voulez l'afficher
+            binding.tvJustificationLink.text = "Justificatif disponible"
             binding.btnOpenJustification.isEnabled = true
             binding.btnOpenJustification.setOnClickListener {
                 try {

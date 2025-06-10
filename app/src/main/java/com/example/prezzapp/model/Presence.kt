@@ -12,21 +12,10 @@ import androidx.room.PrimaryKey
     ]
 )
 data class Presence(
-    @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
-
-    @ColumnInfo(name = "user_id")
-    val userId: Int,
-
-    @ColumnInfo(name = "cours_id")
-    val coursId: Int,
-
-    @ColumnInfo(name = "est_justifie")
-    val estJustifie: Boolean,
-
-    @ColumnInfo(name = "lien")
-    val lien: String?,
-
-    @ColumnInfo(name = "est_present")
-    val estPresent: Boolean
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    @ColumnInfo(name = "user_id") val userId: Int,
+    @ColumnInfo(name = "cours_id") val coursId: Int,
+    @ColumnInfo(name = "est_justifie") val estJustifie: Boolean,
+    @ColumnInfo(name = "lien") val lien: String?,
+    @ColumnInfo(name = "est_present") val estPresent: Boolean
 )
