@@ -32,13 +32,12 @@ abstract class AppDatabase : RoomDatabase() {
 
         fun getDatabase(context: Context): AppDatabase {
             return INSTANCE ?: synchronized(this) {
-                val instance = Room.databaseBuilder(
+                val PATH = context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)?.path + File.separator + DB_NAME
+                Room.databaseBuilder(
                     context.applicationContext,
                     AppDatabase::class.java,
                     DB_NAME
                 )
-
-                    .allowMainThreadQueries() // à éviter en prod, mais utile ici
                     .createFromFile(File(PATH))
                     .addCallback(object : RoomDatabase.Callback() {
                         override fun onCreate(db: SupportSQLiteDatabase) {
@@ -51,9 +50,7 @@ abstract class AppDatabase : RoomDatabase() {
                             Log.d("RoomDB", "Base de données ouverte.")
                         }
                     })
-                    .build()
-                INSTANCE = instance
-                instance
+                    .build().also { INSTANCE = it }
             }
         }
     }
