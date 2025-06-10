@@ -1,6 +1,7 @@
 package com.example.prezzapp
 
 import android.Manifest
+import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -23,6 +24,7 @@ import com.example.prezzapp.model.Status
 import com.example.prezzapp.model.User
 import com.example.prezzapp.ui.theme.PrezzAppTheme
 import java.io.File
+import kotlin.compareTo
 
 
 class MainActivity : ComponentActivity() {
@@ -39,25 +41,21 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-
         Thread {
             val sftpConnection: SftpConnection = SftpConnection.getInstance()
             sftpConnection.testSSHConnection { success, message ->
                 if (success) {
                     Log.d("SSH", "Connection successful: $message")
                     sftpConnection.importDatabaseFromServer(this)
+                    AppDatabase.getDatabase(this)
                 } else {
                     Log.e("SSH", "Connection failed: $message")
                 }
             }
 
-            Room.databaseBuilder(this, AppDatabase::class.java, "prezapp_database.db")
-                .createFromFile(File("/storage/emulated/0/Download/"))
-                .build()
         }.start()
 
-        /*val db = AppDatabase.getDatabase(this)
-
+/*
 
         val userDao = db.userDao()x
         val presenceDao = db.presenceDao()

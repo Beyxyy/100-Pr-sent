@@ -11,6 +11,9 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.prezzapp.database.SftpConnection
 import java.io.File
 import java.io.IOException
+import java.io.FileInputStream
+import java.io.FileOutputStream
+
 
 @Database(entities = [User::class, Cours::class, Presence::class], version = 1)
 abstract class AppDatabase : RoomDatabase() {
@@ -34,7 +37,7 @@ abstract class AppDatabase : RoomDatabase() {
                     context.applicationContext,
                     AppDatabase::class.java,
                     DB_NAME
-                )
+                ).openHelperFactory(androidx.sqlite.db.framework.FrameworkSQLiteOpenHelperFactory()) // Force l'ouverture de la base
                     .addCallback(object : RoomDatabase.Callback() {
                         override fun onCreate(db: SupportSQLiteDatabase) {
                             super.onCreate(db)
@@ -46,7 +49,7 @@ abstract class AppDatabase : RoomDatabase() {
                             Log.d("RoomDB", "Base de données ouverte.")
                         }
                     })
-                    .allowMainThreadQueries() // à éviter en prod, mais utile ici
+                    .allowMainThreadQueries() // à éviter en prod, mais utile ici // Charge la base de données existante
                     .build()
                 INSTANCE = instance
                 instance
@@ -157,4 +160,18 @@ abstract class AppDatabase : RoomDatabase() {
             db.query("PRAGMA wal_checkpoint(TRUNCATE);")
         }
 
+
+    fun copyDbFromDownloads(context: Context) {
+        val downloadsDir = context.getExternalFilesDir(android.os.Environment.DIRECTORY_DOWNLOADS)
+        val sourceFile = File(downloadsDir, "prezzapp_database.db")
+        val destFile = context.getDatabasePath("prezzapp_database.db")
+
+        if (!destFile.parentFile.exists()) destFile.parentFile.mkdirs()
+
+        FileInputStream(sourceFile).use { input ->
+            FileOutputStream(destFile).use { output ->
+                input.copyTo(output)
+            }
+        }
+    }
 }
