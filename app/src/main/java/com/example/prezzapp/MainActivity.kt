@@ -50,10 +50,8 @@ class MainActivity : ComponentActivity() {
                     Log.e("SSH", "Connection failed: $message")
                 }
             }
-
-            Room.databaseBuilder(this, AppDatabase::class.java, "prezapp_database.db")
-                .createFromFile(File("/storage/emulated/0/Download/"))
-                .build()
+            val isopne=AppDatabase.getDatabase(this).isOpen
+            Log.e("BDD : ", "$isopne")
         }.start()
 
         /*val db = AppDatabase.getDatabase(this)

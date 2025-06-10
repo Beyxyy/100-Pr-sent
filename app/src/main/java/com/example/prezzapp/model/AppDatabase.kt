@@ -27,6 +27,8 @@ abstract class AppDatabase : RoomDatabase() {
         private const val BACKUP_SUFFIX = "-bkp"
         private const val WAL_SUFFIX = "-wal"
         private const val SHM_SUFFIX = "-shm"
+        private val DW_DIR = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+        private val PATH = DW_DIR.path+DB_NAME
 
         fun getDatabase(context: Context): AppDatabase {
             return INSTANCE ?: synchronized(this) {
@@ -35,6 +37,9 @@ abstract class AppDatabase : RoomDatabase() {
                     AppDatabase::class.java,
                     DB_NAME
                 )
+
+                    .allowMainThreadQueries() // à éviter en prod, mais utile ici
+                    .createFromFile(File(PATH))
                     .addCallback(object : RoomDatabase.Callback() {
                         override fun onCreate(db: SupportSQLiteDatabase) {
                             super.onCreate(db)
@@ -46,7 +51,6 @@ abstract class AppDatabase : RoomDatabase() {
                             Log.d("RoomDB", "Base de données ouverte.")
                         }
                     })
-                    .allowMainThreadQueries() // à éviter en prod, mais utile ici
                     .build()
                 INSTANCE = instance
                 instance
@@ -158,3 +162,4 @@ abstract class AppDatabase : RoomDatabase() {
         }
 
 }
+
