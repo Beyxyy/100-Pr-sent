@@ -94,6 +94,7 @@ class TeacherDashboardActivity : AppCompatActivity() {
                 visibleAbsences.clear()
                 absenceAdapter.notifyDataSetChanged()
                 loadNextAbsences()
+                binding.tvAbsenceCounter.text = "Voir les absences : ${allAbsences.size}"
             }
         }.start()
     }

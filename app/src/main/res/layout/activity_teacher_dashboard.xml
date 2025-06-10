@@ -21,7 +21,7 @@
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tv_titre_du_jour"
@@ -34,7 +34,7 @@
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_title"/>
+        app:layout_constraintTop_toBottomOf="@id/tv_title" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/card_today_course"
@@ -66,7 +66,7 @@
                 android:layout_height="wrap_content"
                 android:text="Lundi 5 juin"
                 android:textColor="#444"
-                android:textSize="14sp"/>
+                android:textSize="14sp" />
 
             <TextView
                 android:id="@+id/tv_cours_titre"
@@ -75,7 +75,7 @@
                 android:layout_marginTop="4dp"
                 android:text="Mathématiques - Salle B202"
                 android:textSize="18sp"
-                android:textStyle="bold"/>
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/tv_classe"
@@ -84,22 +84,22 @@
                 android:layout_marginTop="8dp"
                 android:text="Classe de 2nde A"
                 android:textColor="#555"
-                android:textSize="12sp"/>
+                android:textSize="12sp" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
     <TextView
-        android:id="@+id/tv_titre_absences"
+        android:id="@+id/tv_absence_counter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="24dp"
-        android:text="Voir les absences"
+        android:text="Voir les absences : 0"
         android:textColor="@color/blue_logo"
         android:textSize="16sp"
         android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/card_today_course"/>
+        app:layout_constraintTop_toBottomOf="@id/card_today_course"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_absences_prof"
@@ -108,10 +108,10 @@
         android:layout_marginTop="12dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:listitem="@layout/item_absence_teacher"
-        app:layout_constraintTop_toBottomOf="@id/tv_titre_absences"
+        app:layout_constraintTop_toBottomOf="@id/tv_absence_counter"
         app:layout_constraintBottom_toTopOf="@id/btn_voir_plus_prof"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <Button
         android:id="@+id/btn_voir_plus_prof"
@@ -123,5 +123,6 @@
         android:textColor="@color/blue_logo"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
