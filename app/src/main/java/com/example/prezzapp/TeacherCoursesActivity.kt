@@ -9,17 +9,18 @@ import com.example.prezzapp.databinding.ActivityTeacherCoursesBinding
 import com.example.prezzapp.model.AppDatabase
 import com.example.prezzapp.model.Presence
 import com.example.prezzapp.model.Status
+import com.example.prezzapp.ThemeManager
 
 class TeacherCoursesActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityTeacherCoursesBinding
     private lateinit var adapter: StudentAdapter
     private val students = mutableListOf<StudentItem>()
-
     private var courseId: Int = -1
     private var profLogin: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        ThemeManager.applyTheme(this)
         super.onCreate(savedInstanceState)
         binding = ActivityTeacherCoursesBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -34,6 +35,10 @@ class TeacherCoursesActivity : AppCompatActivity() {
 
         binding.rvStudents.layoutManager = LinearLayoutManager(this)
         binding.rvStudents.adapter = adapter
+
+        binding.btnToggleTheme.setOnClickListener {
+            ThemeManager.toggleTheme(this)
+        }
 
         loadStudentsForCourse()
     }

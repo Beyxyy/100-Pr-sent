@@ -2,13 +2,12 @@ package com.example.prezzapp
 
 import android.os.Build
 import android.os.Bundle
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.example.prezzapp.R
 import com.example.prezzapp.data.Absence
 
 class ViewJustificatifTeacherActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        ThemeManager.applyTheme(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_view_justificatif_teacher)
 

@@ -9,6 +9,7 @@ import com.example.prezzapp.adapters.AbsenceAdapterTeacher
 import com.example.prezzapp.data.Absence
 import com.example.prezzapp.databinding.ActivityTeacherDashboardBinding
 import com.example.prezzapp.model.AppDatabase
+import com.example.prezzapp.ThemeManager
 
 class TeacherDashboardActivity : AppCompatActivity() {
 
@@ -20,6 +21,7 @@ class TeacherDashboardActivity : AppCompatActivity() {
     private var profLogin: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        ThemeManager.applyTheme(this)
         super.onCreate(savedInstanceState)
         binding = ActivityTeacherDashboardBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -45,6 +47,10 @@ class TeacherDashboardActivity : AppCompatActivity() {
                     })
                 }
             }.start()
+        }
+
+        binding.btnToggleTheme.setOnClickListener {
+            ThemeManager.toggleTheme(this)
         }
     }
 

@@ -20,6 +20,8 @@ class StudentDashboardActivity : AppCompatActivity() {
     private var userId: Int = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        ThemeManager.applyTheme(this)
+
         super.onCreate(savedInstanceState)
         binding = ActivityStudentDashboardBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -31,6 +33,10 @@ class StudentDashboardActivity : AppCompatActivity() {
 
         binding.btnVoirPlus.setOnClickListener {
             loadNextAbsences()
+        }
+
+        binding.btnToggleTheme.setOnClickListener {
+            ThemeManager.toggleTheme(this)
         }
     }
 
@@ -61,7 +67,7 @@ class StudentDashboardActivity : AppCompatActivity() {
                     cours?.let {
                         Absence(
                             id = presence.id.toString(),
-                            courseName = it.nomcours,      // ✅ correction ici
+                            courseName = it.nomcours,
                             date = it.jour,
                             professorName = it.prof,
                             isJustified = presence.estJustifie

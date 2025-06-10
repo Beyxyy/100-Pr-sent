@@ -10,7 +10,10 @@
     <color name="white">#FFFFFFFF</color>
     <color name="blue_logo">#27A3CA</color>
     <color name="green_logo">#52BB7A</color>
-    <color name="green_justified">#E8F5E9</color>
-    <color name="orange_not_justified">#FFF3E0</color>
+    <color name="green_justified">#27A3CA</color>
+    <color name="orange_not_justified">#52BB7A</color>
     <color name="fond">#F5F5F5</color>
+    <color name="colorBackground">#FFFFFF</color>
+    <color name="notjustified">#82C484</color>
+    <color name="justified">#A0D2DB</color>
 </resources>

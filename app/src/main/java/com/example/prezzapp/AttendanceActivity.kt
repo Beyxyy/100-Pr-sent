@@ -15,6 +15,7 @@ class AttendanceActivity : AppCompatActivity() {
     private var courseId: Int = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        ThemeManager.applyTheme(this)
         super.onCreate(savedInstanceState)
         binding = ActivityAttendanceBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -27,14 +28,17 @@ class AttendanceActivity : AppCompatActivity() {
 
         Thread {
             val db = AppDatabase.getDatabase(this)
-            val students =
-                db.coursDao().getPromobyCours(courseId, Status.STUDENT)
+            val students = db.coursDao().getPromobyCours(courseId, Status.STUDENT)
             runOnUiThread { adapter.submitList(students) }
         }.start()
 
         binding.btnSaveAttendance.setOnClickListener {
             saveAttendance()
             finish()
+        }
+
+        binding.btnToggleTheme.setOnClickListener {
+            ThemeManager.toggleTheme(this)
         }
     }
 

@@ -32,6 +32,7 @@ class JustifyAbsenceActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        ThemeManager.applyTheme(this)
         super.onCreate(savedInstanceState)
         binding = ActivityJustifyAbsenceBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -50,9 +51,12 @@ class JustifyAbsenceActivity : AppCompatActivity() {
         if (userRole == "student") {
             setupFileUpload()
         } else {
-            // Désactive les éléments de justification pour les profs
             binding.cardUploadJustification.visibility = View.GONE
             binding.btnSelectFile.visibility = View.GONE
+        }
+
+        binding.btnToggleTheme.setOnClickListener {
+            ThemeManager.toggleTheme(this)
         }
     }
 
@@ -118,5 +122,4 @@ class JustifyAbsenceActivity : AppCompatActivity() {
             Toast.makeText(this, "Veuillez sélectionner un fichier d'abord.", Toast.LENGTH_SHORT).show()
         }
     }
-
 }
