@@ -15,7 +15,7 @@ class StudentService(context: Context) {
         return presenceDao.getByUser(userId)
     }
 
-    fun getAbsenceById(absenceId: Int): Presence {
+    fun getPresenceById(absenceId: Int): Presence? {
         return presenceDao.getAbsenceById(absenceId)
     }
 }
