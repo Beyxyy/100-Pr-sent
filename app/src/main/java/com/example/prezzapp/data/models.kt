@@ -7,5 +7,7 @@ data class Absence(
     val courseName: String,
     val date: String,
     val professorName: String,
-    var isJustified: Boolean
+    var isJustified: Boolean,
+    val totalStudents: Int = 0,
+    val absentCount: Int = 0
 ) : Serializable

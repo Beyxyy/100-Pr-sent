@@ -34,6 +34,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_title" />
 
+    <TextView
+        android:id="@+id/tv_absent_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="8dp"
+        android:text="0 absent(s)"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_titre_eleves" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvStudents"
         android:layout_width="0dp"
@@ -43,7 +55,7 @@
         tools:listitem="@layout/item_student"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_titre_eleves"
+        app:layout_constraintTop_toBottomOf="@id/tv_absent_count"
         app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

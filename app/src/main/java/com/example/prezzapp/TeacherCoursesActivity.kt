@@ -29,6 +29,7 @@ class TeacherCoursesActivity : AppCompatActivity() {
 
         adapter = StudentAdapter(students) { student, isChecked ->
             if (isChecked) insertAbsence(student.id) else deleteAbsence(student.id)
+            updateAbsentCounter()
         }
 
         binding.rvStudents.layoutManager = LinearLayoutManager(this)
@@ -66,8 +67,17 @@ class TeacherCoursesActivity : AppCompatActivity() {
                     )
                 )
             }
-            runOnUiThread { adapter.notifyDataSetChanged() }
+
+            runOnUiThread {
+                adapter.notifyDataSetChanged()
+                updateAbsentCounter()
+            }
         }.start()
+    }
+
+    private fun updateAbsentCounter() {
+        val count = students.count { it.isAbsent }
+        binding.tvAbsentCount.text = "$count absent(s)"
     }
 
     private fun insertAbsence(studentId: Int) {
