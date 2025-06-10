@@ -1,7 +1,10 @@
 package com.example.prezzapp
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Button
+import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.prezzapp.databinding.ActivityLoginBinding
@@ -15,6 +18,26 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         ThemeManager.applyTheme(this)
         super.onCreate(savedInstanceState)
+
+        val sharedPref = getSharedPreferences("user_prefs", MODE_PRIVATE)
+        val savedUserId = sharedPref.getInt("user_id", -1)
+        val savedStatus = sharedPref.getString("status", null)
+
+        if (savedUserId != -1 && savedStatus != null) {
+            val intent = when (Status.valueOf(savedStatus)) {
+                Status.TEACHER -> Intent(this, TeacherDashboardActivity::class.java).apply {
+                    putExtra("prof_login", "inutilisé") // à adapter si besoin
+                }
+                Status.STUDENT -> Intent(this, StudentDashboardActivity::class.java).apply {
+                    putExtra("user_id", savedUserId)
+                }
+            }
+            startActivity(intent)
+            finish()
+            return
+        }
+
+        setContentView(R.layout.activity_login)
 
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -91,6 +114,7 @@ class LoginActivity : AppCompatActivity() {
 
                 runOnUiThread {
                     if (user != null) {
+                        saveLoggedInUser(user.id, user.status)
                         Toast.makeText(this, "Bienvenue ${user.name}", Toast.LENGTH_SHORT).show()
                         val intent = when (user.status) {
                             Status.TEACHER -> Intent(this, TeacherDashboardActivity::class.java).apply {
@@ -113,6 +137,15 @@ class LoginActivity : AppCompatActivity() {
 
         themeButton.setOnClickListener {
             ThemeManager.toggleTheme(this)
+        }
+    }
+
+    private fun saveLoggedInUser(userId: Int, status: Status) {
+        val sharedPref = getSharedPreferences("user_prefs", MODE_PRIVATE)
+        with(sharedPref.edit()) {
+            putInt("user_id", userId)
+            putString("status", status.name)
+            apply()
         }
     }
 }
