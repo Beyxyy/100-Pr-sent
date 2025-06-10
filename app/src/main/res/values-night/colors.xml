@@ -16,4 +16,5 @@
     <color name="colorBackground">#1B2E36</color>
     <color name="notjustified">#D8BFD8</color>
     <color name="justified">#A0D2DB</color>
+    <color name="colorCourse">#345670</color>
 </resources>

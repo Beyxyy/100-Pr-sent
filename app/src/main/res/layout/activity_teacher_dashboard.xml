@@ -71,7 +71,7 @@
             android:focusable="true"
             android:foreground="?attr/selectableItemBackground"
             android:orientation="vertical"
-            android:backgroundTint="@color/fond"
+            android:backgroundTint="@color/colorCourse"
             android:padding="16dp">
 
             <TextView
