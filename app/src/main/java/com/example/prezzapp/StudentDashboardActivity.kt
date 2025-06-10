@@ -1,9 +1,11 @@
 package com.example.prezzapp
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -56,8 +58,30 @@ class StudentDashboardActivity : AppCompatActivity() {
                     putExtra("selected_absence", absence)
                 }
                 startActivity(intent)
+            } else {
+                lifecycleScope.launch {
+                    val db = AppDatabase.getDatabase(this@StudentDashboardActivity)
+                    val presence = withContext(Dispatchers.IO) {
+                        db.presenceDao().getAbsenceById(absence.id.toInt())
+                    }
+                    presence?.lien?.let { lien ->
+                        try {
+                            val fileUri = Uri.parse(lien)
+                            val openIntent = Intent(Intent.ACTION_VIEW).apply {
+                                setDataAndType(fileUri, contentResolver.getType(fileUri))
+                                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                            }
+                            startActivity(openIntent)
+                        } catch (e: Exception) {
+                            Toast.makeText(this@StudentDashboardActivity, "Impossible d'ouvrir le fichier.", Toast.LENGTH_SHORT).show()
+                        }
+                    } ?: run {
+                        Toast.makeText(this@StudentDashboardActivity, "Lien du justificatif introuvable.", Toast.LENGTH_SHORT).show()
+                    }
+                }
             }
         }
+
         binding.rvAbsences.layoutManager = LinearLayoutManager(this)
         binding.rvAbsences.adapter = absenceAdapter
     }
