@@ -2,6 +2,7 @@ package com.example.prezzapp.database
 
 import android.content.Context
 import android.content.Intent
+import android.os.Environment
 import android.util.Log
 import com.jcraft.jsch.*
 import java.io.File
@@ -9,7 +10,7 @@ import java.io.FileOutputStream
 
 class SftpConnection {
 
-    private val host: String = "10.74.252.206"
+    private val host: String = "10.74.251.68"
     private val port: Int = 22
     private val username: String = "groupe1"
     private val password: String = "Euler314"
@@ -183,13 +184,15 @@ class SftpConnection {
                 channel.connect()
 
 
-                val localDbFile = File(context.getDatabasePath("prezzapp_database.db").absolutePath)
+                val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+                val localFile = File(downloadsDir, "prezzapp_database.db")
+
 
                 // Chemin du fichier distant (sur le serveur)
                 val remotePath = "/data/prezzapp_backup.db"
 
                 // Téléchargement depuis le serveur vers le chemin local
-                channel.get(remotePath, localDbFile.absolutePath)
+                channel.get(remotePath, localFile.absolutePath)
 
                 Log.d("SFTP", "Base importée avec succès depuis le serveur.")
 
@@ -200,8 +203,6 @@ class SftpConnection {
             }
         }.start()
     }
-
-
 }
 
 
