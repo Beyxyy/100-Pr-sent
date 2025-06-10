@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -99,27 +100,40 @@ class JustifyAbsenceActivity : AppCompatActivity() {
     }
 
     private fun uploadJustification() {
-        selectedFileUri?.let { uri ->
-            selectedAbsence?.let { absence ->
-                val db = AppDatabase.getDatabase(this)
-                val presenceDao = db.presenceDao()
+        val uri = selectedFileUri
+        val absence = selectedAbsence
 
-                Thread {
-                    val presence = presenceDao.getAbsenceById(absence.id.toInt())
-                    val updatedPresence = presence.copy(
-                        estJustifie = true,
-                        lien = uri.toString()
-                    )
-                    presenceDao.insert(updatedPresence)
-
-                    runOnUiThread {
-                        Toast.makeText(this, "Justificatif envoyé et absence justifiée !", Toast.LENGTH_LONG).show()
-                        finish()
-                    }
-                }.start()
-            }
-        } ?: run {
+        if (uri == null) {
             Toast.makeText(this, "Veuillez sélectionner un fichier d'abord.", Toast.LENGTH_SHORT).show()
+            return
         }
+
+        if (absence == null) {
+            Toast.makeText(this, "Absence non disponible.", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val db = AppDatabase.getDatabase(this)
+        val presenceDao = db.presenceDao()
+
+        Thread {
+            val presence = presenceDao.getAbsenceById(absence.id.toInt())
+            if (presence != null) {
+                val updatedPresence = presence.copy(
+                    estJustifie = true,
+                    lien = uri.toString()
+                )
+                presenceDao.update(updatedPresence)  // <- ici on utilise update au lieu d'insert
+
+                runOnUiThread {
+                    Toast.makeText(this, "Justificatif envoyé et absence justifiée !", Toast.LENGTH_LONG).show()
+                    finish()
+                }
+            } else {
+                runOnUiThread {
+                    Toast.makeText(this, "Absence introuvable en base.", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }.start()
     }
 }

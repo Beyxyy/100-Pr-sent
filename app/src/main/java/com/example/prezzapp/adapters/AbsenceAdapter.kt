@@ -2,6 +2,7 @@ package com.example.prezzapp.adapters
 
 import android.content.Context
 import android.graphics.Color
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
@@ -18,6 +19,8 @@ class AbsenceAdapter(
 
     inner class AbsenceViewHolder(private val binding: ItemAbsenceBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(absence: Absence) {
+            Log.d("AbsenceAdapter", "Bind absence id=${absence.id}, justified=${absence.isJustified}")
+
             binding.tvCourseDate.text = "${absence.courseName} - ${absence.date}"
             binding.tvProfessor.text = "${absence.professorName}"
 
@@ -31,10 +34,10 @@ class AbsenceAdapter(
                 binding.tvJustifiedStatus.text = "Non justifié"
                 binding.tvJustifiedStatus.background = ContextCompat.getDrawable(context, R.drawable.rounded_orange_background)
                 binding.tvJustifiedStatus.setTextColor(Color.WHITE)
+            }
 
-                binding.root.setOnClickListener {
-                    onAbsenceClick(absence)
-                }
+            binding.root.setOnClickListener {
+                onAbsenceClick(absence)
             }
         }
     }

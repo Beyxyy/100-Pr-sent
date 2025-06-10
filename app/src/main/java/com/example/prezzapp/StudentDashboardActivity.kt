@@ -70,15 +70,24 @@ class StudentDashboardActivity : AppCompatActivity() {
                             courseName = it.nomcours,
                             date = it.jour,
                             professorName = it.prof,
-                            isJustified = presence.estJustifie
+                            isJustified = presence.estJustifie,
+                            justificationLink = presence.lien
+
                         )
                     }
-                }
-            )
 
+            }.sortedByDescending { it.date }
+            )
             runOnUiThread {
+                val oldSize = visibleAbsences.size
+                visibleAbsences.clear()
+                absenceAdapter.notifyItemRangeRemoved(0, oldSize)
+
+                allAbsences.clear()
+                allAbsences.addAll(absences)
+
                 loadNextAbsences()
-            }
+
         }.start()
     }
 

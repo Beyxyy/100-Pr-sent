@@ -4,7 +4,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="29" /> <!--28?-->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="29" />
 
     <application
         android:allowBackup="true"
@@ -15,13 +15,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.PrezzApp"
-        tools:targetApi="31"> <!--34?-->
+        tools:targetApi="31">
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.PrezzApp">
         </activity>
+
         <activity
             android:name=".LoginActivity"
             android:exported="true">
@@ -30,10 +32,12 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+
         <activity
             android:name=".StudentDashboardActivity"
             android:exported="true">
         </activity>
+
         <activity
             android:name=".JustifyAbsenceActivity"
             android:exported="false"
@@ -42,10 +46,22 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".StudentDashboardActivity" />
         </activity>
+
+        <!-- Ajout de ViewJustificationActivity -->
+        <activity
+            android:name=".ViewJustificationActivity"
+            android:exported="false"
+            android:parentActivityName=".StudentDashboardActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".StudentDashboardActivity" />
+        </activity>
+
         <activity
             android:name=".TeacherDashboardActivity"
             android:exported="true">
         </activity>
+
         <activity
             android:name=".ViewJustificatifTeacherActivity"
             android:exported="true"
@@ -54,10 +70,12 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".TeacherDashboardActivity" />
         </activity>
+
         <activity
             android:name=".TeacherCoursesActivity"
             android:exported="true"
             android:parentActivityName=".TeacherDashboardActivity" >
         </activity>
+
     </application>
 </manifest>
