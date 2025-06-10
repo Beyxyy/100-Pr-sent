@@ -21,7 +21,6 @@ class StudentDashboardActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         ThemeManager.applyTheme(this)
-
         super.onCreate(savedInstanceState)
         binding = ActivityStudentDashboardBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -60,34 +59,29 @@ class StudentDashboardActivity : AppCompatActivity() {
             val coursList = coursDao.getAll()
             val presences = presenceDao.getByUser(userId)
 
-            allAbsences.clear()
-            allAbsences.addAll(
-                presences.mapNotNull { presence ->
-                    val cours = coursList.find { it.id == presence.coursId }
-                    cours?.let {
-                        Absence(
-                            id = presence.id.toString(),
-                            courseName = it.nomcours,
-                            date = it.jour,
-                            professorName = it.prof,
-                            isJustified = presence.estJustifie,
-                            justificationLink = presence.lien
-
-                        )
-                    }
-
+            val fetchedAbsences = presences.mapNotNull { presence ->
+                val cours = coursList.find { it.id == presence.coursId }
+                cours?.let {
+                    Absence(
+                        id = presence.id.toString(),
+                        courseName = it.nomcours,
+                        date = it.jour,
+                        professorName = it.prof,
+                        isJustified = presence.estJustifie,
+                        justificationLink = presence.lien
+                    )
+                }
             }.sortedByDescending { it.date }
-            )
+
             runOnUiThread {
-                val oldSize = visibleAbsences.size
                 visibleAbsences.clear()
-                absenceAdapter.notifyItemRangeRemoved(0, oldSize)
+                absenceAdapter.notifyDataSetChanged()
 
                 allAbsences.clear()
-                allAbsences.addAll(absences)
+                allAbsences.addAll(fetchedAbsences)
 
                 loadNextAbsences()
-
+            }
         }.start()
     }
 
@@ -108,8 +102,6 @@ class StudentDashboardActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        visibleAbsences.clear()
-        allAbsences.clear()
         loadAbsencesFromDatabase()
     }
 }
