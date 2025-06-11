@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.prezzapp.R
-import com.example.prezzapp.ViewJustificatifTeacherActivity
 import com.example.prezzapp.data.Absence
 import com.example.prezzapp.databinding.ItemAbsenceTeacherBinding
 
@@ -41,22 +40,14 @@ class AbsenceAdapterTeacher(
                 )
             )
 
-            if (justified) {
-                binding.btnVoirJustificatif.visibility = View.VISIBLE
-                binding.btnVoirJustificatif.setOnClickListener {
-                    val intent = Intent(context, ViewJustificatifTeacherActivity::class.java)
-                    intent.putExtra("selected_absence", absence)
-                    context.startActivity(intent)
-                }
-                binding.root.setOnClickListener(null)
-            } else {
-                binding.btnVoirJustificatif.visibility = View.GONE
-                binding.root.setOnClickListener {
-                    onAbsenceClick(absence)
-                }
+            // Disable justification viewing for teachers
+            binding.btnVoirJustificatif.visibility = View.GONE
+            binding.root.setOnClickListener {
+                onAbsenceClick(absence)
             }
         }
     }
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbsenceViewHolder {
         val inflater = LayoutInflater.from(parent.context)
