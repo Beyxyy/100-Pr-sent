@@ -10,6 +10,9 @@ import com.example.prezzapp.data.Absence
 import com.example.prezzapp.databinding.ActivityTeacherDashboardBinding
 import com.example.prezzapp.model.AppDatabase
 import com.example.prezzapp.model.Cours
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
 class TeacherDashboardActivity : BaseActivity() {
 
@@ -40,6 +43,7 @@ class TeacherDashboardActivity : BaseActivity() {
         setupAbsenceRecyclerView()
 
         loadCoursesFromDatabase()
+        loadTodayCourses()
         loadAbsencesFromDatabase()
     }
 
@@ -121,6 +125,75 @@ class TeacherDashboardActivity : BaseActivity() {
                 absenceAdapter.notifyDataSetChanged()
                 loadNextAbsences()
                 binding.tvAbsenceCounter.text = "Voir les absences : ${allAbsences.size}"
+            }
+        }.start()
+    }
+
+    fun filterFutureCourses(courses: List<Cours>): List<Cours> {
+        val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        val today = Calendar.getInstance().apply {
+            set(Calendar.HOUR_OF_DAY, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }.time
+
+        return courses.filter {
+            try {
+                val date = sdf.parse(it.jour)
+                date != null && !date.before(today)
+            } catch (e: Exception) {
+                false
+            }
+        }
+    }
+
+    private fun loadTodayCourses() {
+        Thread {
+            val db = AppDatabase.getDatabase(this)
+            val coursDao = db.coursDao()
+            val userDao = db.userDao()
+            val profLoginLower = profLogin.lowercase()
+            val profUser = userDao.getAll().find { it.login.lowercase() == profLoginLower }
+            val profNameDb = profUser?.name ?: ""
+
+            val allCourses = coursDao.getAll().filter {
+                it.prof.equals(profNameDb, ignoreCase = true)
+            }
+
+            val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+            val today = Calendar.getInstance().apply {
+                set(Calendar.HOUR_OF_DAY, 0)
+                set(Calendar.MINUTE, 0)
+                set(Calendar.SECOND, 0)
+                set(Calendar.MILLISECOND, 0)
+            }.time
+
+            val upcomingCourses = allCourses.filter {
+                try {
+                    val date = sdf.parse(it.jour)
+                    date != null && !date.before(today)
+                } catch (e: Exception) {
+                    false
+                }
+            }.sortedBy {
+                try {
+                    sdf.parse(it.jour)
+                } catch (e: Exception) {
+                    null
+                }
+            }
+
+            runOnUiThread {
+                courseAdapter = CourseAdapter(upcomingCourses) { cours ->
+                    startActivity(Intent(this, TeacherCoursesActivity::class.java).apply {
+                        putExtra("prof_login", profLogin)
+                        putExtra("course_id", cours.id)
+                    })
+                }
+
+                binding.rvTodayCourses.layoutManager = LinearLayoutManager(this)
+                binding.rvTodayCourses.adapter = courseAdapter
             }
         }.start()
     }
