@@ -91,24 +91,24 @@ fun DetailsAbscenceComponent(
         Column(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Button(
-                onClick = {
-                    activity.lifecycleScope.launch {
-                        AdminService(activity).downloadJustitf(
-                            absence?.lien ?: "",
-                            absence!!
-                        )
-                    }
-                },
-                modifier = Modifier.fillMaxWidth(),
-                colors = androidx.compose.material3.ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFF4CAF50),
-                    contentColor = Color.White
-                ),
-                shape = MaterialTheme.shapes.medium
-            ) {
-                Text(text = "Télécharger le justificatif d'absence")
-            }
+//            Button(
+//                onClick = {
+//                    activity.lifecycleScope.launch {
+//                        AdminService(activity).downloadJustitf(
+//                            absence?.lien ?: "",
+//                            absence!!
+//                        )
+//                    }
+//                },
+//                modifier = Modifier.fillMaxWidth(),
+//                colors = androidx.compose.material3.ButtonDefaults.buttonColors(
+//                    containerColor = Color(0xFF4CAF50),
+//                    contentColor = Color.White
+//                ),
+//                shape = MaterialTheme.shapes.medium
+//            ) {
+//                Text(text = "Télécharger le justificatif d'absence")
+//            }
 
             Button(
                 onClick = {

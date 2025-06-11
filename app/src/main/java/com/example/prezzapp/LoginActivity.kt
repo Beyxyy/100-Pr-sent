@@ -68,8 +68,10 @@ class LoginActivity : AppCompatActivity() {
                 presenceDao.deleteAll()
 
                 val coursList = listOf(
-                    Cours(0, "Joel Dion", "Stats", "01/01/2025", "8h-10h", "CM", "1A", "IR", "Stats"),
-                )
+                    Cours(0, "Joel Dion", "Stats", "11/06/2025", "8h-10h", "CM", "1A", "IR", "Stats"),
+                    Cours(0, "Joel Dion", "Calcul Matriciel", "12/06/2025", "8h-10h", "CM", "1A", "IR", "Stats"),
+
+                    )
                 coursList.forEach { coursDao.insert(it) }
 
                 val allCours = coursDao.getAll()
