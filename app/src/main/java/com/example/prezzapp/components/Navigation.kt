@@ -16,11 +16,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.prezzapp.BaseActivity
 import com.example.prezzapp.Screen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Navigation(modifier: Modifier = Modifier, activity: ComponentActivity) {
+fun Navigation(modifier: Modifier = Modifier, activity: BaseActivity) {
     val navController = rememberNavController()
     var menuExpanded by remember { mutableStateOf(false) }
 
@@ -51,7 +52,9 @@ fun Navigation(modifier: Modifier = Modifier, activity: ComponentActivity) {
                             text = { Text("Se déconnecter") },
                             leadingIcon = { Icon(Icons.Default.ExitToApp, contentDescription = null) },
                             onClick = {
-                                // TODO: Handle logout logic here
+                                //supprime les user_prefs
+                                activity.logout()
+
                                 menuExpanded = false
                             }
                         )
