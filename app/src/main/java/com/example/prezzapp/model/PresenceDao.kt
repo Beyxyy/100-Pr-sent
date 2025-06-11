@@ -184,7 +184,7 @@ interface PresenceDao {
     FROM Presence
     JOIN user ON user.id = presence.user_id
     JOIN cours ON cours.id = presence.cours_id
-    WHERE cours.matiere = :matiere  -- Condition WHERE modifiée pour correspondre au paramètre
+    WHERE cours.matiere = :matiere and presence.est_justifie=false  -- Condition WHERE modifiée pour correspondre au paramètre
 """)
    fun getAbsenceByMatiere(matiere : String) : List<Absence>
 
