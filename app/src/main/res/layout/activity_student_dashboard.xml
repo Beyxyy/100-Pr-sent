@@ -40,14 +40,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Déconnexion"
-        android:textColor="@android:color/white"
-        android:backgroundTint="@color/green_logo"
+        android:textColor="#FFFFFF"
+        android:backgroundTint="@color/orange_not_justified"
         android:textSize="14sp"
         android:padding="8dp"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         android:layout_marginTop="24dp"
-        android:layout_marginEnd="16dp" />
+        android:layout_marginStart="16dp" />
     <TextView
         android:id="@+id/tv_titre_absences"
         android:layout_width="wrap_content"

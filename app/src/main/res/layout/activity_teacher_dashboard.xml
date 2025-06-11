@@ -32,7 +32,7 @@
         android:layout_margin="16dp"
         android:layout_gravity="end"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintStart_toStartOf="parent" />
 
 
     <Button
@@ -83,7 +83,7 @@
             android:focusable="true"
             android:foreground="?attr/selectableItemBackground"
             android:orientation="vertical"
-            android:backgroundTint="@color/colorCourse"
+            android:background="@color/colorCourse"
             android:padding="16dp">
 
             <TextView
@@ -91,7 +91,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Lundi 5 juin"
-                android:textColor="#444"
+                android:textColor="@color/black"
                 android:textSize="14sp" />
 
             <TextView
@@ -101,6 +101,7 @@
                 android:layout_marginTop="4dp"
                 android:text="Mathématiques - Salle B202"
                 android:textSize="18sp"
+                android:textColor="@color/black"
                 android:textStyle="bold" />
 
             <TextView
@@ -109,7 +110,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:text="Classe de 2nde A"
-                android:textColor="#555"
+                android:textColor="@color/black"
                 android:textSize="12sp" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>

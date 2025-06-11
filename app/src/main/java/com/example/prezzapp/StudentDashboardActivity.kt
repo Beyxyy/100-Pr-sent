@@ -44,11 +44,13 @@ class StudentDashboardActivity : BaseActivity() {
 
     private fun setupRecyclerView() {
         absenceAdapter = AbsenceAdapter(this, visibleAbsences) { absence ->
-            val intent = Intent(this, JustifyAbsenceActivity::class.java).apply {
-                putExtra("selected_absence", absence)
-                putExtra("user_role", "student")
+            if (!absence.isJustified) {
+                val intent = Intent(this, JustifyAbsenceActivity::class.java).apply {
+                    putExtra("selected_absence", absence)
+                    putExtra("user_role", "student")
+                }
+                startActivity(intent)
             }
-            startActivity(intent)
         }
         binding.rvAbsences.layoutManager = LinearLayoutManager(this)
         binding.rvAbsences.adapter = absenceAdapter
