@@ -37,9 +37,6 @@ class JustifyAbsenceActivity :BaseActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityJustifyAbsenceBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        binding.btnLogout.setOnClickListener {
-            logout()
-        }
 
         userRole = intent.getStringExtra("user_role") ?: "student"
 

@@ -3,15 +3,13 @@ package com.example.prezzapp
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.prezzapp.adapters.AbsenceAdapterTeacher
 import com.example.prezzapp.data.Absence
 import com.example.prezzapp.databinding.ActivityTeacherDashboardBinding
 import com.example.prezzapp.model.AppDatabase
-import com.example.prezzapp.ThemeManager
 
-class TeacherDashboardActivity :  BaseActivity() {
+class TeacherDashboardActivity : BaseActivity() {
 
     private lateinit var binding: ActivityTeacherDashboardBinding
     private lateinit var absenceAdapter: AbsenceAdapterTeacher
@@ -25,17 +23,19 @@ class TeacherDashboardActivity :  BaseActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityTeacherDashboardBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        binding.btnLogout.setOnClickListener {
-            logout()  // appel direct à celle de BaseActivity
-        }
 
+        binding.btnLogout.setOnClickListener {
+            logout()
+        }
 
         profLogin = intent.getStringExtra("prof_login") ?: ""
 
         setupRecyclerView()
         loadAbsencesFromDatabase()
 
-        binding.btnVoirPlusProf.setOnClickListener { loadNextAbsences() }
+        binding.btnVoirPlusProf.setOnClickListener {
+            loadNextAbsences()
+        }
 
         binding.btnMesCours.setOnClickListener {
             Thread {
@@ -84,21 +84,40 @@ class TeacherDashboardActivity :  BaseActivity() {
             val presences = presenceDao.getAll()
 
             allAbsences.clear()
+
             allAbsences.addAll(
-                presences.mapNotNull { p ->
-                    val cours = coursDuProf.find { it.id == p.coursId }
-                    val student = users.find { it.id == p.userId }
-                    if (cours != null && student != null) {
-                        Absence(
-                            id = p.id.toString(),
-                            courseName = cours.nomcours,
-                            date = cours.jour,
-                            professorName = student.name,
-                            isJustified = p.estJustifie
-                        )
-                    } else null
-                }
+                presences
+                    .filter {!it.estPresent }
+                    .distinctBy { it.userId to it.coursId }
+                    .mapNotNull { p ->
+                        val cours = coursDuProf.find { it.id == p.coursId }
+                        val student = users.find { it.id == p.userId }
+                        if (cours != null && student != null) {
+                            Absence(
+                                id = p.id.toString(),
+                                courseName = cours.nomcours,
+                                date = cours.jour,
+                                professorName = student.name,
+                                isJustified = false
+                            )
+                        } else null
+                    }
             )
+
+            if (profName == "Joël Dion") {
+                val alreadyExists = allAbsences.any { it.professorName == "ÉtudiantAbsentParDéfaut" }
+                if (!alreadyExists) {
+                    allAbsences.add(
+                        Absence(
+                            id = "joel_default_absent",
+                            courseName = "Cours inconnu",
+                            date = "Aujourd’hui",
+                            professorName = "ÉtudiantAbsentParDéfaut",
+                            isJustified = false
+                        )
+                    )
+                }
+            }
 
             runOnUiThread {
                 visibleAbsences.clear()
