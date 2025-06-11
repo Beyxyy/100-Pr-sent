@@ -70,7 +70,7 @@ class LoginActivity : AppCompatActivity() {
                 val coursList = listOf(
                     Cours(0, "Joel Dion", "Mathématiques", "10/06/2025", "8h-10h", "CM", "1A", "IR", "Mathématiques"),
                     Cours(0, "Joel Dion", "Stats", "11/06/2025", "8h-10h", "CM", "1A", "IR", "Stats"),
-                    Cours(0, "Joel Dion", "Calcul Matriciel", "12/06/2025", "8h-10h", "CM", "1A", "IR", "Stats"),
+                    Cours(0, "Joel Dion", "Calcul Matriciel", "12/06/2025", "8h-10h", "CM", "1A", "IR", "Calcul Matriciel"),
                     Cours(0, "Joel Dion", "Mathématiques", "13/06/2025", "8h-10h", "CM", "1A", "IR", "Mathématiques"),
                     Cours(0, "Joel Dion", "Calcul Matriciel", "14/06/2025", "8h-10h", "CM", "1A", "IR", "Calcul Matriciel"),
                     Cours(0, "Joel Dion", "Calcul Matriciel", "15/06/2025", "8h-10h", "CM", "1A", "IR", "Calcul Matriciel"),
