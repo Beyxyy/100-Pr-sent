@@ -152,4 +152,40 @@ interface PresenceDao {
         ORDER BY Cours.jour DESC
     """)
     fun getAbsencesWithDetailsByUser(userId: Int): List<AbsenceWithDetails>
+
+    @Query("""
+    SELECT 
+        presence.id as presence_id, 
+        presence.cours_id as presence_table_cours_id, 
+        presence.user_id as presence_table_user_id, 
+        presence.est_justifie as presence_est_justifie, 
+        presence.lien as presence_lien, 
+        presence.est_present as presence_est_present,
+        
+        user.id AS user_id, 
+        user.login AS user_login, 
+        user.name AS user_name, 
+        user.password AS user_password, 
+        user.td AS user_td, 
+        user.tp AS user_tp, 
+        user.annee AS user_annee, 
+        user.spe AS user_spe, 
+        user.status AS user_status,
+        
+        cours.id AS cours_id, 
+        cours.prof AS cours_prof, 
+        cours.nomcours AS cours_nomcours,
+        cours.jour AS cours_jour, 
+        cours.heure AS cours_heure, 
+        cours.groupe AS cours_groupe, 
+        cours.annee AS cours_annee, 
+        cours.spe AS cours_spe, 
+        cours.matiere AS cours_matiere
+    FROM Presence
+    JOIN user ON user.id = presence.user_id
+    JOIN cours ON cours.id = presence.cours_id
+    WHERE cours.matiere = :matiere  -- Condition WHERE modifiée pour correspondre au paramètre
+""")
+   fun getAbsenceByMatiere(matiere : String) : List<Absence>
+
 }

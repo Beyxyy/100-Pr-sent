@@ -7,8 +7,9 @@ sealed class Screen(val route: String) {
     object AddCoursAdmin : Screen("add_cours_admin")
     object AllJustifAdminScreen : Screen("all_justif_admin_screen")
     object SearchStudent : Screen("search_student")
+    object Matiere : Screen("matiere")
 
-    fun withArgs(vararg args : Int) : String{
+    fun withArgs(vararg args : Any) : String{
         return buildString {
             append(route)
             args.forEach { arg ->

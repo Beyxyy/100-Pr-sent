@@ -57,6 +57,10 @@ fun HomeContainer(modifier: Modifier = Modifier, navController: NavController, a
             AdminActionButton("🔍 Chercher un étudiant") {
                 navController.navigate(Screen.SearchStudent.route)
             }
+
+            AdminActionButton("Voir les débrief par matière") {
+                navController.navigate(Screen.Matiere.withArgs("Mathématiques"))
+            }
         }
     }
 }

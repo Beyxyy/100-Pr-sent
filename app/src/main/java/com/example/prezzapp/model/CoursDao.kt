@@ -27,6 +27,11 @@ interface CoursDao {
     fun getPromobyCours(coursId: Int, status: Status): List<User>
 
     @Query("""
+        Select * from cours where (heure=:heure and jour=:date and spe = :spe) or  (heure=:heure and jour=:date and prof = :nomProf)
+    """)
+    fun findCours(heure : String, date: String, nomProf: String, spe: String) : List<Cours>
+
+    @Query("""
         Select * from Cours where prof = :prof
     """)
     fun findCourByProf(prof: String): List<Cours>

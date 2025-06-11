@@ -120,6 +120,17 @@ fun Navigation(modifier: Modifier = Modifier, activity: BaseActivity) {
                 composable(route = Screen.SearchStudent.route) {
                     SearchStudent(navController = navController, activity = activity)
                 }
+
+                composable(route = Screen.Matiere.route+"/{matiere}"
+                ,arguments = listOf(
+                        navArgument("matiere") {
+                            type = NavType.StringType
+                            nullable = false
+                        }
+                    )
+                ) { entry ->
+                    DebriefMatiere(navController = navController, activity = activity)
+                }
             }
         }
     }

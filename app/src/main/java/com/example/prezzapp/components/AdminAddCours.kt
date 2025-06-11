@@ -24,7 +24,7 @@ fun AdminAddCours(navController: NavController, activity: ComponentActivity) {
     var nomProf by remember { mutableStateOf("") }
     var spe by remember { mutableStateOf("") }
     var groupe by remember { mutableStateOf("") }
-    var heure by remember { mutableStateOf<LocalTime?>(null) }
+    var heure by remember { mutableStateOf("") }
     var date by remember { mutableStateOf<LocalDate?>(null) }
     var annee by remember { mutableStateOf("") }
     var matiere by remember { mutableStateOf("") }
@@ -33,15 +33,15 @@ fun AdminAddCours(navController: NavController, activity: ComponentActivity) {
     var showDatePicker by remember { mutableStateOf(false) }
 
     val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
-    val dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yy")
+    val dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
     val context = LocalContext.current
 
     // Fixed time ranges
     val timeRanges = listOf(
-        Pair(LocalTime.of(8, 0), LocalTime.of(10, 0)),
-        Pair(LocalTime.of(10, 0), LocalTime.of(12, 0)),
-        Pair(LocalTime.of(14, 0), LocalTime.of(16, 0)),
-        Pair(LocalTime.of(16, 0), LocalTime.of(18, 0))
+        "08h-10h",
+        "10h-12h",
+        "14h-16h",
+        "16h-18h"
     )
 
     Column(
@@ -57,26 +57,142 @@ fun AdminAddCours(navController: NavController, activity: ComponentActivity) {
             modifier = Modifier.padding(bottom = 8.dp)
         )
 
-        OutlinedTextField(
-            value = nomProf,
-            onValueChange = { nomProf = it },
-            label = { Text("Nom du prof") },
+        var profExpanded by remember { mutableStateOf(false) }
+        ExposedDropdownMenuBox(
+            expanded = profExpanded,
+            onExpandedChange = { profExpanded = !profExpanded },
             modifier = Modifier.fillMaxWidth()
-        )
+        ) {
+            OutlinedTextField(
+                readOnly = true,
+                value = nomProf ?: "Sélectionner un prof",
+                onValueChange = {},
+                label = { Text("Prof") },
+                trailingIcon = {
+                    ExposedDropdownMenuDefaults.TrailingIcon(expanded = profExpanded)
+                },
+                colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(),
+                modifier = Modifier.menuAnchor().fillMaxWidth()
+            )
 
-        OutlinedTextField(
-            value = spe,
-            onValueChange = { spe = it },
-            label = { Text("Spécialité") },
-            modifier = Modifier.fillMaxWidth()
-        )
+            ExposedDropdownMenu(
+                expanded = profExpanded,
+                onDismissRequest = { profExpanded = false }
+            ) {
+                DropdownMenuItem(
+                    text = { Text("Joel Dion") },
+                    onClick = {
+                        nomProf = "Joel Dion"
+                        profExpanded = false
+                    }
 
-        OutlinedTextField(
-            value = groupe,
-            onValueChange = { groupe = it },
-            label = { Text("Groupe") },
+                )
+            }
+        }
+
+        var speExpanded by remember { mutableStateOf(false) }
+        ExposedDropdownMenuBox(
+            expanded = speExpanded,
+            onExpandedChange = { speExpanded = !speExpanded },
             modifier = Modifier.fillMaxWidth()
-        )
+        ) {
+            OutlinedTextField(
+                readOnly = true,
+                value = spe ?: "Sélectionner une spécialité",
+                onValueChange = {},
+                label = { Text("Spécialité") },
+                trailingIcon = {
+                    ExposedDropdownMenuDefaults.TrailingIcon(expanded = speExpanded)
+                },
+                colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(),
+                modifier = Modifier.menuAnchor().fillMaxWidth()
+            )
+
+            ExposedDropdownMenu(
+                expanded = speExpanded,
+                onDismissRequest = { speExpanded = false }
+            ) {
+                    DropdownMenuItem(
+                        text = { Text("IR") },
+                        onClick = {
+                            spe = "IR"
+                            speExpanded = false
+                        }
+
+                    )
+            }
+        }
+
+        var groupeExpanded by remember { mutableStateOf(false) }
+        ExposedDropdownMenuBox(
+            expanded = groupeExpanded,
+            onExpandedChange = { groupeExpanded = !groupeExpanded },
+            modifier = Modifier.fillMaxWidth()
+
+        ) {
+            OutlinedTextField(
+                readOnly = true,
+                value = groupe ?: "Sélectionner un groupe",
+                onValueChange = {},
+                label = { Text("Groupe") },
+                trailingIcon = {
+                    ExposedDropdownMenuDefaults.TrailingIcon(expanded = groupeExpanded)
+                },
+                colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(),
+                modifier = Modifier.menuAnchor().fillMaxWidth()
+            )
+            ExposedDropdownMenu(
+                expanded = groupeExpanded,
+                onDismissRequest = { groupeExpanded = false }
+            ) {
+
+                DropdownMenuItem(
+                    text = { Text("TP1") },
+                    onClick = {
+                        groupe = "TP1"
+                        groupeExpanded = false
+                    }
+                )
+                DropdownMenuItem(
+                    text = { Text("TP2") },
+                    onClick = {
+                        groupe = "TP2"
+                        groupeExpanded = false
+                    }
+                )
+                DropdownMenuItem(
+                    text = { Text("TP3") },
+                    onClick = {
+                        groupe = "TP3"
+                        groupeExpanded = false
+                    }
+                )
+                DropdownMenuItem(
+                    text = { Text("TD1") },
+                    onClick = {
+                        groupe = "TD1"
+                        groupeExpanded = false
+                    }
+                )
+                DropdownMenuItem(
+                    text = { Text("TD2") },
+                    onClick = {
+                        groupe = "TD2"
+                        groupeExpanded = false
+                    }
+                )
+                DropdownMenuItem(
+                    text = { Text("CM") },
+                    onClick = {
+                        groupe = "CM"
+                        groupeExpanded = false
+                    }
+                )
+            }
+
+        }
+
+
 
         // Time selector
         ExposedDropdownMenuBox(
@@ -86,9 +202,7 @@ fun AdminAddCours(navController: NavController, activity: ComponentActivity) {
         ) {
             OutlinedTextField(
                 readOnly = true,
-                value = timeRanges.find { it.first == heure }?.let {
-                    "${it.first.format(timeFormatter)} - ${it.second.format(timeFormatter)}"
-                } ?: "Sélectionner une heure",
+                value = heure ?: "Sélectionner une heure",
                 onValueChange = {},
                 label = { Text("Heure") },
                 trailingIcon = {
@@ -102,11 +216,11 @@ fun AdminAddCours(navController: NavController, activity: ComponentActivity) {
                 expanded = timeExpanded,
                 onDismissRequest = { timeExpanded = false }
             ) {
-                timeRanges.forEach { (start, end) ->
+                timeRanges.forEach { h ->
                     DropdownMenuItem(
-                        text = { Text("${start.format(timeFormatter)} - ${end.format(timeFormatter)}") },
+                        text = { Text(text = h) },
                         onClick = {
-                            heure = start
+                            heure = h
                             timeExpanded = false
                         }
                     )
@@ -148,21 +262,83 @@ fun AdminAddCours(navController: NavController, activity: ComponentActivity) {
             }
         }
 
-        OutlinedTextField(
-            value = annee,
-            onValueChange = { annee = it },
-            label = { Text("Année (1A, 2A, 3A)") },
+        var anneeExpanded by remember { mutableStateOf(false) }
+        ExposedDropdownMenuBox(
+            expanded = anneeExpanded,
+            onExpandedChange = { anneeExpanded = !anneeExpanded },
             modifier = Modifier.fillMaxWidth()
-        )
 
-        OutlinedTextField(
-            value = matiere,
-            onValueChange = { matiere = it },
-            label = { Text("Matière") },
+        ) {
+            OutlinedTextField(
+                readOnly = true,
+                value = annee ?: "Sélectionner une année",
+                onValueChange = {},
+                label = { Text("Année") },
+                trailingIcon = {
+                    ExposedDropdownMenuDefaults.TrailingIcon(expanded = anneeExpanded)
+                },
+                colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(),
+                modifier = Modifier.menuAnchor().fillMaxWidth()
+            )
+            ExposedDropdownMenu(
+                expanded = anneeExpanded,
+                onDismissRequest = { anneeExpanded = false }
+            ) {
+
+                DropdownMenuItem(
+                    text = { Text("1A") },
+                    onClick = {
+                        annee = "1A"
+                        anneeExpanded = false
+                    }
+                )
+
+            }
+        }
+
+
+        var matiereExpanded by remember { mutableStateOf(false) }
+        ExposedDropdownMenuBox(
+            expanded = matiereExpanded,
+            onExpandedChange = { matiereExpanded = !matiereExpanded },
             modifier = Modifier.fillMaxWidth()
-        )
 
-        Spacer(modifier = Modifier.height(24.dp))
+        ) {
+            OutlinedTextField(
+                readOnly = true,
+                value = matiere ?: "Sélectionner une matiere",
+                onValueChange = {},
+                label = { Text("Matiere") },
+                trailingIcon = {
+                    ExposedDropdownMenuDefaults.TrailingIcon(expanded = matiereExpanded)
+                },
+                colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(),
+                modifier = Modifier.menuAnchor().fillMaxWidth()
+            )
+            ExposedDropdownMenu(
+                expanded = matiereExpanded,
+                onDismissRequest = { matiereExpanded = false }
+            ) {
+
+                DropdownMenuItem(
+                    text = { Text("Calcul Matriciel") },
+                    onClick = {
+                        matiere = "Calcul Matriciel"
+                        matiereExpanded = false
+                    }
+                )
+                DropdownMenuItem(
+                    text = { Text("Stats") },
+                    onClick = {
+                        matiere = "Stats"
+                        matiereExpanded = false
+                    }
+                )
+            }
+
+        }
+
+
 
         Button(
             onClick = {
@@ -179,7 +355,8 @@ fun AdminAddCours(navController: NavController, activity: ComponentActivity) {
                         heure = heure!!.format(timeFormatter),
                         date = date!!.format(dateFormatter),
                         annee = annee,
-                        matiere = matiere
+                        matiere = matiere,
+                        context
                     )
                     navController.popBackStack()
                 }

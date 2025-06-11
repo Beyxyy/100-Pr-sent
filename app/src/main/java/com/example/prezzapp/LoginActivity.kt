@@ -1,7 +1,10 @@
 package com.example.prezzapp
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Button
+import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.prezzapp.databinding.ActivityLoginBinding
@@ -65,37 +68,29 @@ class LoginActivity : AppCompatActivity() {
                 presenceDao.deleteAll()
 
                 val coursList = listOf(
-                    Cours(0, "Joel Dion", "Physique", "01/01/2025", "10h-12h", "TD", "1A", "IR", "Physique"),
-                    Cours(0, "Joel Dion", "Informatique", "01/01/2025", "14h-16h", "TP", "1A", "IR", "Informatique"),
-                    Cours(0, "Julie Petit", "Physique", "03/01/2025", "13h-15h", "TD", "1A", "IR", "Physique"),
-                    Cours(0, "Jean Lemoine", "Chimie", "04/01/2025", "15h-17h", "CM", "2A", "IR", "Chimie"),
-                    Cours(0, "Sophie Marchand", "Biologie", "05/01/2025", "17h-19h", "CM", "3A", "IR", "Biologie")
+                    Cours(0, "Joel Dion", "Stats", "01/01/2025", "8h-10h", "CM", "1A", "IR", "Stats"),
                 )
                 coursList.forEach { coursDao.insert(it) }
 
                 val allCours = coursDao.getAll()
 
                 val users = listOf(
-                    User(101, "joel.dion@uha.fr", "Joel Dion", "azerty1", "", "", "", "", Status.TEACHER),
-                    User(102, "jean.lemoine@uha.fr", "Jean Lemoine", "azerty2", "", "", "", "", Status.TEACHER),
-                    User(103, "luc.bernard@uha.fr", "Luc Bernard", "azerty3", "", "", "", "", Status.TEACHER),
-                    User(104, "sophie.marchand@uha.fr", "Sophie Marchand", "azerty4", "", "", "", "", Status.TEACHER),
-                    User(105, "julie.petit@uha.fr", "Julie Petit", "azerty5", "", "", "", "", Status.ADMIN),
-                    User(1, "amine.martin@uha.fr", "Amine Martin", "pass01", "TD2", "TP3", "1A", "IR", Status.STUDENT),
-                    User(2, "lina.nguyen@uha.fr", "Lina Nguyen", "pass02", "TD2", "TP3", "2A", "IR", Status.STUDENT),
-                    User(3, "youssef.diallo@uha.fr", "Youssef Diallo", "pass03", "TD2", "TP2", "1A", "IR", Status.STUDENT),
-                    User(4, "nina.morel@uha.fr", "Nina Morel", "pass04", "TD1", "TP3", "3A", "IR", Status.STUDENT)
+                    User(0, "joel.dion@uha.fr", "Joel Dion", "azerty1", "", "", "", "", Status.TEACHER),
+                    User(0, "julie.petit@uha.fr", "Julie Petit", "azerty5", "", "", "", "", Status.ADMIN),
+                    User(0, "amine.martin@uha.fr", "Amine Martin", "pass01", "TD2", "TP3", "1A", "IR", Status.STUDENT),
+                    User(0, "youssef.delgrande@uha.fr", "Youssef Delgrande", "pass01", "TD1", "TP1", "1A", "IR", Status.STUDENT),
+                    User(0, "thomas.becher@uha.fr", "Thomas Bécher", "pass01", "TD1", "TP2", "1A", "IR", Status.STUDENT)
+
                 )
                 users.forEach { userDao.insert(it) }
 
                 val amine = users.first { it.name == "Amine Martin" }
-                val coursAmine = allCours.filter { it.annee == "1A" && it.spe == "IR" }
+                val coursStats = allCours.first { it.nomcours=="Stats" }
 
-                val presenceList = coursAmine
-                    .filter { it.prof == "Joel Dion" }
-                    .map { Presence(0, amine.id, it.id, false, null, false) }
+                 presenceDao.insert(Presence(0, amine.id, coursStats.id, false, null, false))
+                 presenceDao.insert(Presence(0, amine.id, coursStats.id, false, null, false))
+                presenceDao.insert(Presence(0, amine.id, coursStats.id, true, "justificatif.pdf", false))
 
-                presenceList.forEach { presenceDao.insert(it) }
 
                 val joelCourses = allCours.filter { it.prof == "Joel Dion" && it.annee == "1A" && it.spe == "IR" }
                 val firstYearStudents = users.filter { it.status == Status.STUDENT && it.annee == "1A" && it.spe == "IR" }

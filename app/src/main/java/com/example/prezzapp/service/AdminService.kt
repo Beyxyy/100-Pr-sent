@@ -1,5 +1,8 @@
 package com.example.prezzapp.service
 
+import android.content.Context
+import android.os.Looper
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import com.example.prezzapp.database.SftpConnection
 import com.example.prezzapp.model.Absence
@@ -96,7 +99,8 @@ class AdminService : Service {
         heure: String,
         date: String,
         annee: String,
-        matiere: String
+        matiere: String,
+        context: Context
     ) = withContext(Dispatchers.IO) {
         val cours = Cours(
             id = 0,
@@ -109,7 +113,20 @@ class AdminService : Service {
             matiere = matiere,
             nomcours = matiere
         )
-        coursDao.insert(cours)
+        if(coursDao.findCours(heure, date, nomProf, spe).isEmpty()){
+            coursDao.insert(cours)
+        }
+        else{
+            Looper.prepare()
+            Toast.makeText(context, "Il y a un problème de chevauchement des horaires", Toast.LENGTH_SHORT).show()
+
+        }
+
+    }
+
+
+    suspend fun getAbsenceByMatiere(matiere: String): List<Absence> = withContext(Dispatchers.IO) {
+        presenceDao.getAbsenceByMatiere(matiere)
     }
 
 }
