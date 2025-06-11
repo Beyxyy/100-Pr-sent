@@ -34,8 +34,8 @@ class MainActivity : ComponentActivity() {
             }
         }
 
-        val sftpConnection = SftpConnection.getInstance()
-        sftpConnection.testSSHConnection { success, message ->
+        // Appel corrigé ici : testSSHConnection est appelé directement en statique
+        SftpConnection.testSSHConnection { success, message ->
             if (success) {
                 Log.d("SSH", "Connection successful: $message")
             } else {

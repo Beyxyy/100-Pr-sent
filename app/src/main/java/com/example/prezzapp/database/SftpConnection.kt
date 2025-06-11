@@ -1,27 +1,19 @@
 package com.example.prezzapp.database
 
+import android.content.Context
 import com.jcraft.jsch.*
 import java.io.File
 import java.io.FileOutputStream
 
 class SftpConnection {
 
-    private val host: String = "10.74.252.198"
-    private val port: Int = 22
-    private val username: String = "groupe1"
-    private val password: String = "Euler314"
-    private var path = "/home/"
-
-    private var session: Session? = null
-    private var channel: Channel? = null
-    private var channelExec: ChannelExec? = null
-    private var channelSftp: ChannelSftp? = null
-    private var sftp: SftpATTRS? = null
-    private var isConnected: Boolean = false
-    /**
-     * Singleton pattern to ensure only one instance of SftpConnection is created
-     */
     companion object {
+        private const val host: String = "10.74.252.198"
+        private const val port: Int = 22
+        private const val username: String = "groupe1"
+        private const val password: String = "Euler314"
+        private const val path = "/home/"
+
         @Volatile
         private var instance: SftpConnection? = null
 
@@ -30,7 +22,7 @@ class SftpConnection {
                 instance ?: SftpConnection().also { instance = it }
             }
         }
-    }
+
         /**
          * Teste la connexion SSH
          */
@@ -60,9 +52,9 @@ class SftpConnection {
          * Télécharge un fichier via SFTP
          */
         fun downloadFileViaSFTP(
-            context: android.content.Context,
-            localFileName : String,
-            remoteFilePath : String,
+            context: Context,
+            localFileName: String,
+            remoteFilePath: String,
             onResult: (Boolean, String) -> Unit
         ) {
             Thread {
@@ -132,43 +124,83 @@ class SftpConnection {
             }.start()
         }
 
+        /**
+         * Upload un fichier via SFTP
+         */
+        fun uploadFileViaSFTP(
+            filepath: String,
+            remoteDestinationPath: String,
+            onResult: (Boolean, String) -> Unit
+        ) {
+            Thread {
+                try {
+                    // Vérifie que le fichier local existe
+                    val file = File(filepath)
+                    if (!file.exists()) {
+                        android.os.Handler(android.os.Looper.getMainLooper()).post {
+                            onResult(false, "Fichier introuvable : $filepath")
+                        }
+                        return@Thread
+                    }
 
-   fun uploadFileviaSftp(
-       filepath: String,
-       remoteDestinationPath: String,
-       onResult: (Boolean, String) -> Unit
-   ) {
-       Thread {
-           try {
-               val jsch = JSch()
-               session = jsch.getSession(username, host, port)
-               session!!.setPassword(password)
-               val config = java.util.Properties()
-               config["StrictHostKeyChecking"] = "no"
-               session!!.setConfig(config)
-               session!!.connect(5000)
-               channel = session!!.openChannel("sftp")
-               channel!!.connect()
-               channelSftp = channel as ChannelSftp
-               channelSftp!!.put(filepath, remoteDestinationPath)
-               channelSftp!!.exit()
-               session!!.disconnect()
-               channel!!.disconnect()
-               channelSftp!!.disconnect()
-               android.os.Handler(android.os.Looper.getMainLooper()).post {
-                   onResult(true, "Fichier uploadé avec succès !")
-               }
-           } catch (e: Exception) {
-               e.printStackTrace()
-               isConnected = false
-               android.os.Handler(android.os.Looper.getMainLooper()).post {
-                   onResult(false, "Erreur upload : ${e.message}")
-               }
-           }
-       }.start()
-   }
+                    // Connexion SSH via JSch
+                    val jsch = JSch()
+                    val session = jsch.getSession(username, host, port)
+                    session.setPassword(password)
 
+                    val config = java.util.Properties()
+                    config["StrictHostKeyChecking"] = "no"
+                    session.setConfig(config)
 
+                    session.connect(10000) // 10 secondes de timeout
+
+                    if (!session.isConnected) {
+                        android.os.Handler(android.os.Looper.getMainLooper()).post {
+                            onResult(false, "Session SSH non connectée.")
+                        }
+                        return@Thread
+                    }
+
+                    // Ouverture du canal SFTP
+                    val channel = session.openChannel("sftp") as? ChannelSftp
+                    if (channel == null) {
+                        session.disconnect()
+                        android.os.Handler(android.os.Looper.getMainLooper()).post {
+                            onResult(false, "Échec de l'ouverture du canal SFTP.")
+                        }
+                        return@Thread
+                    }
+
+                    channel.connect(5000)
+
+                    if (!channel.isConnected) {
+                        session.disconnect()
+                        android.os.Handler(android.os.Looper.getMainLooper()).post {
+                            onResult(false, "Canal SFTP non connecté.")
+                        }
+                        return@Thread
+                    }
+
+                    // Upload du fichier
+                    channel.put(filepath, remoteDestinationPath)
+
+                    // Fermeture
+                    channel.disconnect()
+                    session.disconnect()
+
+                    // Succès
+                    android.os.Handler(android.os.Looper.getMainLooper()).post {
+                        onResult(true, "Fichier uploadé avec succès vers : $remoteDestinationPath")
+                    }
+
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    android.os.Handler(android.os.Looper.getMainLooper()).post {
+                        onResult(false, "Erreur upload : ${e.message}")
+                    }
+                }
+            }.start()
+        }
+
+    }
 }
-
-

@@ -10,8 +10,10 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.example.prezzapp.data.Absence
+import com.example.prezzapp.database.SftpConnection
 import com.example.prezzapp.databinding.ActivityJustifyAbsenceBinding
 import com.example.prezzapp.model.AppDatabase
+import java.io.File
 
 class JustifyAbsenceActivity :BaseActivity() {
 
@@ -106,37 +108,45 @@ class JustifyAbsenceActivity :BaseActivity() {
         val uri = selectedFileUri
         val absence = selectedAbsence
 
-        if (uri == null) {
-            Toast.makeText(this, "Veuillez sélectionner un fichier d'abord.", Toast.LENGTH_SHORT).show()
+        if (uri == null || absence == null) {
+            Toast.makeText(this, "Veuillez sélectionner un fichier ou une absence valide.", Toast.LENGTH_SHORT).show()
             return
         }
 
-        if (absence == null) {
-            Toast.makeText(this, "Absence non disponible.", Toast.LENGTH_SHORT).show()
-            return
+        val inputStream = contentResolver.openInputStream(uri)
+        val localFile = File(cacheDir, "justif_${absence.id}.pdf")
+        inputStream?.use { input ->
+            localFile.outputStream().use { output ->
+                input.copyTo(output)
+            }
         }
 
-        val db = AppDatabase.getDatabase(this)
-        val presenceDao = db.presenceDao()
+        val remotePath = "/home/justificatifs/justif_${absence.id}.pdf"
+        SftpConnection.uploadFileViaSFTP(localFile.absolutePath, remotePath) { success, message ->
+            runOnUiThread {
+                if (success) {
+                    val db = AppDatabase.getDatabase(this)
+                    Thread {
+                        val presence = db.presenceDao().getAbsenceById(absence.id.toInt())
+                        if (presence != null) {
+                            val updatedPresence = presence.copy(
+                                estJustifie = true,
+                                lien = remotePath
+                            )
+                            db.presenceDao().update(updatedPresence)
 
-        Thread {
-            val presence = presenceDao.getAbsenceById(absence.id.toInt())
-            if (presence != null) {
-                val updatedPresence = presence.copy(
-                    estJustifie = true,
-                    lien = uri.toString()
-                )
-                presenceDao.update(updatedPresence)  // <- ici on utilise update au lieu d'insert
-
-                runOnUiThread {
-                    Toast.makeText(this, "Justificatif envoyé et absence justifiée !", Toast.LENGTH_LONG).show()
-                    finish()
-                }
-            } else {
-                runOnUiThread {
-                    Toast.makeText(this, "Absence introuvable en base.", Toast.LENGTH_SHORT).show()
+                            runOnUiThread {
+                                Toast.makeText(this, "Justificatif envoyé et absence justifiée !", Toast.LENGTH_LONG).show()
+                                finish()
+                            }
+                        }
+                    }.start()
+                } else {
+                    Toast.makeText(this, "Erreur lors de l'envoi : $message", Toast.LENGTH_LONG).show()
                 }
             }
-        }.start()
+        }
+
     }
+
 }
