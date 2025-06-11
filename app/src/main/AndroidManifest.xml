@@ -5,6 +5,12 @@
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="29" />
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="29" />
 
     <application
         android:allowBackup="true"
@@ -17,10 +23,16 @@
         android:theme="@style/Theme.PrezzApp"
         tools:targetApi="31">
 
+        tools:targetApi="31">
+        <service
+            android:name=".database.MyService"
+            android:enabled="true"
+            android:exported="true"></service>
+
         <activity
-            android:name=".MainActivity"
+            android:name=".AdminActivity"
             android:exported="true"
-            android:label="@string/app_name"
+            android:label="@string/title_activity_admin"
             android:theme="@style/Theme.PrezzApp">
         </activity>
 
@@ -28,20 +40,30 @@
             android:name=".LoginActivity"
             android:exported="true">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.PrezzApp" ></activity>
+        <activity
+            android:name=".LoginActivity"
+            android:exported="true"></activity>
         <activity
             android:name=".StudentDashboardActivity"
             android:exported="true">
         </activity>
 
+            android:exported="true" />
         <activity
             android:name=".JustifyAbsenceActivity"
             android:exported="false"
-            android:parentActivityName=".StudentDashboardActivity" >
+            android:parentActivityName=".StudentDashboardActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".StudentDashboardActivity" />
@@ -77,5 +99,6 @@
             android:parentActivityName=".TeacherDashboardActivity" >
         </activity>
 
+            android:exported="true" />
     </application>
 </manifest>

@@ -5,7 +5,7 @@ import com.example.prezzapp.model.AppDatabase
 
 abstract class Service {
 
-    protected var dbInstance: AppDatabase? = null
+    protected var dbInstance: AppDatabase
 
     constructor(context: ComponentActivity) {
         dbInstance = AppDatabase.getDatabase(context)

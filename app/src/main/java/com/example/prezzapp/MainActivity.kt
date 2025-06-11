@@ -59,7 +59,8 @@ class MainActivity : ComponentActivity() {
                 heure = "10h",
                 groupe = "CM",
                 annee = "1A",
-                spe = "IR"
+                spe = "IR",
+                matiere= "Programmation Avancée",
             )
             coursDao.insert(cours)
 
@@ -87,6 +88,7 @@ class MainActivity : ComponentActivity() {
                 Log.d("DB", "User: ${it.name}, Statut: ${it.status}")
             }
         }.start()
+
     }
 }
 
@@ -105,3 +107,4 @@ fun GreetingPreview() {
         Greeting("Android")
     }
 }
+

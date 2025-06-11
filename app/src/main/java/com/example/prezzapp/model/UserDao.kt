@@ -9,4 +9,8 @@ interface UserDao {
     @Query("DELETE FROM User") fun deleteAll()
     @Query("SELECT * FROM User") fun getAll(): List<User>
     @Query("SELECT * FROM User WHERE login = :email AND password = :password LIMIT 1") fun getByEmailAndPassword(email: String, password: String): User?
+    @Query("SELECT * FROM User WHERE id = :userId") fun getById(userId: Int): User?
+    @Query("SELECT * FROM User WHERE name LIKE :query AND status = 'STUDENT'")
+    suspend fun searchByName(query: String): List<User>
 }
+

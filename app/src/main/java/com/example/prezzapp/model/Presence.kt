@@ -18,4 +18,9 @@ data class Presence(
     @ColumnInfo(name = "est_justifie") val estJustifie: Boolean,
     @ColumnInfo(name = "lien") val lien: String?,
     @ColumnInfo(name = "est_present") val estPresent: Boolean
+    /*val userId: Int,
+    val coursId: Int,
+    var estJustifie: Boolean,
+    val lien: String?,
+    val estPresent: Boolean*/
 )
