@@ -84,10 +84,12 @@ fun UserDetails(id : Int, navController: NavController, activity: ComponentActiv
                     text = "Aucune absence non justifiée",
                 )
             }
-            for (absence in absences) {
 
-                absenceComponent(absence, navController)
-            }
+
+                for (absence in absences.filter { !it.estJustifie }) {
+                    absenceComponent(absence, navController)
+                }
+            
         }
         Spacer(modifier = Modifier.width(20.dp))
         Text(
