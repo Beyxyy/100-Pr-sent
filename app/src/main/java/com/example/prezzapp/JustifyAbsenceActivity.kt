@@ -120,13 +120,12 @@ class JustifyAbsenceActivity :BaseActivity() {
             val presence = presenceDao.getAbsenceById(absence.id.toInt())
             if (presence != null) {
                 val updatedPresence = presence.copy(
-                    estJustifie = true,
                     lien = uri.toString()
                 )
-                presenceDao.update(updatedPresence)  // <- ici on utilise update au lieu d'insert
+                presenceDao.update(updatedPresence)
 
                 runOnUiThread {
-                    Toast.makeText(this, "Justificatif envoyé et absence justifiée !", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, "Justificatif envoyé, absence en attente de justification!", Toast.LENGTH_LONG).show()
                     finish()
                 }
             } else {
