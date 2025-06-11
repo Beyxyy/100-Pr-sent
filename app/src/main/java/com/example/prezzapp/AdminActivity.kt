@@ -15,7 +15,7 @@ import androidx.lifecycle.lifecycleScope
 import com.example.prezzapp.components.Navigation
 import kotlinx.coroutines.launch
 
-class AdminActivity : ComponentActivity() {
+class AdminActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -32,7 +32,7 @@ class AdminActivity : ComponentActivity() {
 }
 
 @Composable
-fun MyApp(modifier: Modifier = Modifier, activity: ComponentActivity) {
+fun MyApp(modifier: Modifier = Modifier, activity: BaseActivity) {
     Surface(
         modifier = modifier,
         color = MaterialTheme.colorScheme.background
