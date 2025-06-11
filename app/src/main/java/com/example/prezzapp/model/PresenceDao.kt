@@ -40,7 +40,7 @@ interface PresenceDao {
     FROM Presence
     JOIN user ON user.id = presence.user_id
     JOIN cours ON cours.id = presence.cours_id
-    WHERE presence.est_justifie = 0 and presence.lien IS NOT NULL 
+    WHERE presence.est_justifie = 0
 """) // J'ai aussi préfixé est_justifie et lien avec presence. pour être explicite
     fun getAllAbsencesUnJustified(): List<Absence>
 
