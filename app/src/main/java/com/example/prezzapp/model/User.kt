@@ -5,7 +5,8 @@ import androidx.room.PrimaryKey
 
 enum class Status {
     STUDENT,
-    TEACHER
+    TEACHER,
+    ADMIN
 }
 
 @Entity

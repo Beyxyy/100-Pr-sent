@@ -95,7 +95,7 @@ fun DetailsAbscenceComponent(
                 onClick = {
                     activity.lifecycleScope.launch {
                         AdminService(activity).downloadJustitf(
-                            absence?.presence?.lien ?: "",
+                            absence?.lien ?: "",
                             absence!!
                         )
                     }
@@ -113,7 +113,7 @@ fun DetailsAbscenceComponent(
             Button(
                 onClick = {
                     activity.lifecycleScope.launch {
-                        absence?.presence?.id?.let { AdminService(activity).justifyAbsence(it) }
+                        absence?.id?.let { AdminService(activity).justifyAbsence(it) }
                         navController.navigate(Screen.MainAdminScreen.route)
                     }
                 },

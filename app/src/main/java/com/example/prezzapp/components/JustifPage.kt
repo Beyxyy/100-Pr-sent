@@ -60,7 +60,7 @@ fun JustifPage(activity: ComponentActivity, navController: NavController) {
         } else {
             for (absence in absenceNotJustified) {
                 AbsenceCard(absence = absence) {
-                    navController.navigate(Screen.JustifAdminScreen.withArgs(absence.presence.id))
+                    navController.navigate(Screen.JustifAdminScreen.withArgs(absence.id))
                 }
                 Spacer(modifier = Modifier.height(12.dp))
             }
@@ -93,9 +93,9 @@ fun AbsenceCard(absence: Absence, onClick: () -> Unit) {
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = "Justifié: ${if (absence.presence.estJustifie) "Oui" else "Non"}",
+                text = "Justifié: ${if (absence.estJustifie) "Oui" else "Non"}",
                 style = MaterialTheme.typography.bodySmall,
-                color = if (absence.presence.estJustifie) Color(0xFF4CAF50) else Color(0xFFF44336),
+                color = if (absence.estJustifie) Color(0xFF4CAF50) else Color(0xFFF44336),
                 fontWeight = FontWeight.Bold
             )
         }

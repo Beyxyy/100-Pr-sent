@@ -97,7 +97,7 @@ fun UserDetails(id : Int, navController: NavController, activity: ComponentActiv
             modifier = Modifier
                 .fillMaxSize()
         ) {
-            for (absence in absences.filter { it.presence.estJustifie }) {
+            for (absence in absences.filter { it.estJustifie }) {
                 absenceComponent(absence, navController)
             }
         }

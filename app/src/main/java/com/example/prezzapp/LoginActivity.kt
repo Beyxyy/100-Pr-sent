@@ -31,6 +31,9 @@ class LoginActivity : AppCompatActivity() {
                 Status.STUDENT -> Intent(this, StudentDashboardActivity::class.java).apply {
                     putExtra("user_id", savedUserId)
                 }
+                Status.ADMIN -> Intent(this, AdminActivity::class.java).apply {
+                    putExtra("user_id", savedUserId)
+                }
             }
             startActivity(intent)
             finish()
@@ -61,11 +64,11 @@ class LoginActivity : AppCompatActivity() {
                 presenceDao.deleteAll()
 
                 val coursList = listOf(
-                    Cours(0, "Joel Dion", "Mathématiques", "01/01/2025", "8h-10h", "CM", "1A", "IR"),
-                    Cours(0, "Luc Bernard", "Informatique", "02/01/2025", "10h-12h", "TP", "1A", "IR"),
-                    Cours(0, "Julie Petit", "Physique", "03/01/2025", "13h-15h", "TD", "1A", "IR"),
-                    Cours(0, "Jean Lemoine", "Chimie", "04/01/2025", "15h-17h", "CM", "2A", "IR"),
-                    Cours(0, "Sophie Marchand", "Biologie", "05/01/2025", "17h-19h", "CM", "3A", "IR")
+                    Cours(0, "Joel Dion", "Mathématiques", "01/01/2025", "8h-10h", "CM", "1A", "IR", "Mathématiques"),
+                    Cours(0, "Luc Bernard", "Informatique", "02/01/2025", "10h-12h", "TP", "1A", "IR", matiere = "Informatique"),
+                    Cours(0, "Julie Petit", "Physique", "03/01/2025", "13h-15h", "TD", "1A", "IR", matiere = "Physique"),
+                    Cours(0, "Jean Lemoine", "Chimie", "04/01/2025", "15h-17h", "CM", "2A", "IR", matiere = "Chimie"),
+                    Cours(0, "Sophie Marchand", "Biologie", "05/01/2025", "17h-19h", "CM", "3A", "IR", matiere = "Biologie")
                 )
                 coursList.forEach { coursDao.insert(it) }
 
@@ -122,6 +125,9 @@ class LoginActivity : AppCompatActivity() {
                             }
                             Status.STUDENT -> Intent(this, StudentDashboardActivity::class.java).apply {
                                 putExtra("user_id", user.id)
+                            }
+                            Status.ADMIN -> Intent(this, AdminActivity::class.java).apply {
+                                putExtra("user_id", savedUserId)
                             }
                         }
                         startActivity(intent)

@@ -19,7 +19,7 @@ fun absenceComponent(absence: Absence, navController: NavController) {
     Button(
         onClick = {
             navController.navigate(
-                route = Screen.JustifAdminScreen.withArgs(absence.presence.id)
+                route = Screen.JustifAdminScreen.withArgs(absence.id)
             )
         },
         modifier = Modifier
