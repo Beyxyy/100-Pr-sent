@@ -75,12 +75,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".StudentDashboardActivity" />
         </activity>
-
         <activity
             android:name=".TeacherDashboardActivity"
             android:exported="true">
         </activity>
-
         <activity
             android:name=".ViewJustificatifTeacherActivity"
             android:exported="true"
@@ -89,13 +87,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".TeacherDashboardActivity" />
         </activity>
-
         <activity
             android:name=".TeacherCoursesActivity"
             android:exported="true"
             android:parentActivityName=".TeacherDashboardActivity" >
         </activity>
-
-            android:exported="true" />
     </application>
 </manifest>
