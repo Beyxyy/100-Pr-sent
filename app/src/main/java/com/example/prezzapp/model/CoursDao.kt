@@ -25,4 +25,9 @@ interface CoursDao {
         """
     )
     fun getPromobyCours(coursId: Int, status: Status): List<User>
+
+    @Query("""
+        Select * from Cours where prof = :prof
+    """)
+    fun findCourByProf(prof: String): List<Cours>
 }

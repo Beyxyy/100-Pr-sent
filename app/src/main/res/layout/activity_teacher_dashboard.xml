@@ -60,59 +60,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_title" />
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/card_today_course"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_today_courses"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        app:cardBackgroundColor="@color/white"
-        app:cardCornerRadius="12dp"
-        app:cardElevation="4dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/item_course"
+        app:layout_constraintTop_toBottomOf="@id/tv_titre_du_jour"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_titre_du_jour">
-
-        <LinearLayout
-            android:id="@+id/btnMesCours"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:focusable="true"
-            android:foreground="?attr/selectableItemBackground"
-            android:orientation="vertical"
-            android:background="@color/colorCourse"
-            android:padding="16dp">
-
-            <TextView
-                android:id="@+id/tv_date"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Lundi 5 juin"
-                android:textColor="@color/black"
-                android:textSize="14sp" />
-
-            <TextView
-                android:id="@+id/tv_cours_titre"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="Mathématiques - Salle B202"
-                android:textSize="18sp"
-                android:textColor="@color/black"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/tv_classe"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="Classe de 2nde A"
-                android:textColor="@color/black"
-                android:textSize="12sp" />
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <TextView
         android:id="@+id/tv_absence_counter"
@@ -124,7 +83,7 @@
         android:textColor="@color/blue_logo"
         android:textSize="16sp"
         android:textStyle="bold"
-        app:layout_constraintTop_toBottomOf="@id/card_today_course"
+        app:layout_constraintTop_toBottomOf="@id/rv_today_courses"
         app:layout_constraintStart_toStartOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView

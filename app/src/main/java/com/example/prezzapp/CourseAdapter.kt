@@ -1,44 +1,43 @@
 package com.example.prezzapp.adapters
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.prezzapp.databinding.ItemCourseBinding
+import com.example.prezzapp.R
 import com.example.prezzapp.model.Cours
 
 class CourseAdapter(
-    private val onClick: (Int) -> Unit
-) : RecyclerView.Adapter<CourseAdapter.VH>() {
+    private val courses: List<Cours>,
+    private val onItemClick: (Cours) -> Unit
+) : RecyclerView.Adapter<CourseAdapter.CourseViewHolder>() {
 
-    private val items = mutableListOf<Cours>()
+    inner class CourseViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private val tvDate: TextView = itemView.findViewById(R.id.tv_date)
+        private val tvCoursTitre: TextView = itemView.findViewById(R.id.tv_cours_titre)
+        private val tvClasse: TextView = itemView.findViewById(R.id.tv_classe)
 
-    fun submitList(list: List<Cours>) {
-        items.clear()
-        items.addAll(list)
-        notifyDataSetChanged()
-    }
+        fun bind(cours: Cours) {
+            tvDate.text = cours.jour
+            tvCoursTitre.text = "${cours.nomcours} - Salle 3.53"
+            tvClasse.text = "Classe de ${cours.annee} ${cours.spe}"
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH =
-        VH(
-            ItemCourseBinding.inflate(
-                LayoutInflater.from(parent.context),
-                parent,
-                false
-            )
-        )
-
-    override fun onBindViewHolder(holder: VH, position: Int) =
-        holder.bind(items[position])
-
-    override fun getItemCount() = items.size
-
-    inner class VH(private val b: ItemCourseBinding) :
-        RecyclerView.ViewHolder(b.root) {
-
-        fun bind(c: Cours) {
-            b.tvCourseName.text = c.nomcours
-            b.tvCourseDate.text = c.jour
-            b.root.setOnClickListener { onClick(c.id) }
+            itemView.setOnClickListener {
+                onItemClick(cours)
+            }
         }
     }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CourseViewHolder {
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.item_course, parent, false)
+        return CourseViewHolder(view)
+    }
+
+    override fun onBindViewHolder(holder: CourseViewHolder, position: Int) {
+        holder.bind(courses[position])
+    }
+
+    override fun getItemCount(): Int = courses.size
 }

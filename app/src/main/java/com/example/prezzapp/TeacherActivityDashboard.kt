@@ -5,16 +5,22 @@ import android.os.Bundle
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.prezzapp.adapters.AbsenceAdapterTeacher
+import com.example.prezzapp.adapters.CourseAdapter
 import com.example.prezzapp.data.Absence
 import com.example.prezzapp.databinding.ActivityTeacherDashboardBinding
 import com.example.prezzapp.model.AppDatabase
+import com.example.prezzapp.model.Cours
 
 class TeacherDashboardActivity : BaseActivity() {
 
     private lateinit var binding: ActivityTeacherDashboardBinding
     private lateinit var absenceAdapter: AbsenceAdapterTeacher
+    private lateinit var courseAdapter: CourseAdapter
+
     private val allAbsences = mutableListOf<Absence>()
     private val visibleAbsences = mutableListOf<Absence>()
+    private val teacherCourses = mutableListOf<Cours>()
+
     private val pageSize = 7
     private var profLogin: String = ""
 
@@ -24,41 +30,31 @@ class TeacherDashboardActivity : BaseActivity() {
         binding = ActivityTeacherDashboardBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.btnLogout.setOnClickListener {
-            logout()
-        }
-
         profLogin = intent.getStringExtra("prof_login") ?: ""
 
-        setupRecyclerView()
+        binding.btnLogout.setOnClickListener { logout() }
+        binding.btnToggleTheme.setOnClickListener { ThemeManager.toggleTheme(this) }
+        binding.btnVoirPlusProf.setOnClickListener { loadNextAbsences() }
+
+        setupCourseRecyclerView()
+        setupAbsenceRecyclerView()
+
+        loadCoursesFromDatabase()
         loadAbsencesFromDatabase()
-
-        binding.btnVoirPlusProf.setOnClickListener {
-            loadNextAbsences()
-        }
-
-        binding.btnMesCours.setOnClickListener {
-            Thread {
-                val db = AppDatabase.getDatabase(this)
-                val userDao = db.userDao()
-                val coursDao = db.coursDao()
-                val profName = userDao.getAll().find { it.login == profLogin }?.name ?: ""
-                val courseId = coursDao.getAll().firstOrNull { it.prof == profName }?.id ?: -1
-                runOnUiThread {
-                    startActivity(Intent(this, TeacherCoursesActivity::class.java).apply {
-                        putExtra("prof_login", profLogin)
-                        putExtra("course_id", courseId)
-                    })
-                }
-            }.start()
-        }
-
-        binding.btnToggleTheme.setOnClickListener {
-            ThemeManager.toggleTheme(this)
-        }
     }
 
-    private fun setupRecyclerView() {
+    private fun setupCourseRecyclerView() {
+        courseAdapter = CourseAdapter(teacherCourses) { cours ->
+            startActivity(Intent(this, TeacherCoursesActivity::class.java).apply {
+                putExtra("prof_login", profLogin)
+                putExtra("course_id", cours.id)
+            })
+        }
+        binding.rvTodayCourses.layoutManager = LinearLayoutManager(this)
+        binding.rvTodayCourses.adapter = courseAdapter
+    }
+
+    private fun setupAbsenceRecyclerView() {
         absenceAdapter = AbsenceAdapterTeacher(this, visibleAbsences) { absence ->
             if (!absence.isJustified) {
                 startActivity(Intent(this, JustifyAbsenceActivity::class.java).apply {
@@ -71,6 +67,22 @@ class TeacherDashboardActivity : BaseActivity() {
         binding.rvAbsencesProf.adapter = absenceAdapter
     }
 
+    private fun loadCoursesFromDatabase() {
+        Thread {
+            val db = AppDatabase.getDatabase(this)
+            val coursDao = db.coursDao()
+            val userDao = db.userDao()
+            val profName = userDao.getAll().find { it.login.equals(profLogin, ignoreCase = true) }?.name ?: ""
+            val courses = coursDao.findCourByProf(profName)
+
+            runOnUiThread {
+                teacherCourses.clear()
+                teacherCourses.addAll(courses)
+                courseAdapter.notifyDataSetChanged()
+            }
+        }.start()
+    }
+
     private fun loadAbsencesFromDatabase() {
         Thread {
             val db = AppDatabase.getDatabase(this)
@@ -79,15 +91,15 @@ class TeacherDashboardActivity : BaseActivity() {
             val userDao = db.userDao()
 
             val users = userDao.getAll()
-            val profName = users.find { it.login == profLogin }?.name ?: ""
-            val coursDuProf = coursDao.getAll().filter { it.prof == profName }
+            val profName = users.find { it.login.equals(profLogin, ignoreCase = true) }?.name ?: ""
+            val coursDuProf = coursDao.getAll().filter { it.prof.equals(profName, ignoreCase = true) }
             val presences = presenceDao.getAll()
 
             allAbsences.clear()
 
             allAbsences.addAll(
                 presences
-                    .filter {!it.estPresent }
+                    .filter { !it.estPresent }
                     .distinctBy { it.userId to it.coursId }
                     .mapNotNull { p ->
                         val cours = coursDuProf.find { it.id == p.coursId }
@@ -98,26 +110,11 @@ class TeacherDashboardActivity : BaseActivity() {
                                 courseName = cours.nomcours,
                                 date = cours.jour,
                                 professorName = student.name,
-                                isJustified = false
+                                isJustified = p.estJustifie
                             )
                         } else null
                     }
             )
-
-            if (profName == "Joël Dion") {
-                val alreadyExists = allAbsences.any { it.professorName == "ÉtudiantAbsentParDéfaut" }
-                if (!alreadyExists) {
-                    allAbsences.add(
-                        Absence(
-                            id = "joel_default_absent",
-                            courseName = "Cours inconnu",
-                            date = "Aujourd’hui",
-                            professorName = "ÉtudiantAbsentParDéfaut",
-                            isJustified = false
-                        )
-                    )
-                }
-            }
 
             runOnUiThread {
                 visibleAbsences.clear()
@@ -143,7 +140,10 @@ class TeacherDashboardActivity : BaseActivity() {
         super.onResume()
         visibleAbsences.clear()
         allAbsences.clear()
+        teacherCourses.clear()
         absenceAdapter.notifyDataSetChanged()
+        courseAdapter.notifyDataSetChanged()
+        loadCoursesFromDatabase()
         loadAbsencesFromDatabase()
     }
 }

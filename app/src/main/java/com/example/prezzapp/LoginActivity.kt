@@ -1,10 +1,7 @@
 package com.example.prezzapp
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
-import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.prezzapp.databinding.ActivityLoginBinding
@@ -24,23 +21,27 @@ class LoginActivity : AppCompatActivity() {
         val savedStatus = sharedPref.getString("status", null)
 
         if (savedUserId != -1 && savedStatus != null) {
-            val intent = when (Status.valueOf(savedStatus)) {
-                Status.TEACHER -> Intent(this, TeacherDashboardActivity::class.java).apply {
-                    putExtra("prof_login", "inutilisé") // à adapter si besoin
+            Thread {
+                val db = AppDatabase.getDatabase(this)
+                val login = db.userDao().getAll().find { it.id == savedUserId }?.login ?: ""
+                runOnUiThread {
+                    val intent = when (Status.valueOf(savedStatus)) {
+                        Status.TEACHER -> Intent(this, TeacherDashboardActivity::class.java).apply {
+                            putExtra("prof_login", login)
+                        }
+                        Status.STUDENT -> Intent(this, StudentDashboardActivity::class.java).apply {
+                            putExtra("user_id", savedUserId)
+                        }
+                        Status.ADMIN -> Intent(this, AdminActivity::class.java).apply {
+                            putExtra("user_id", savedUserId)
+                        }
+                    }
+                    startActivity(intent)
+                    finish()
                 }
-                Status.STUDENT -> Intent(this, StudentDashboardActivity::class.java).apply {
-                    putExtra("user_id", savedUserId)
-                }
-                Status.ADMIN -> Intent(this, AdminActivity::class.java).apply {
-                    putExtra("user_id", savedUserId)
-                }
-            }
-            startActivity(intent)
-            finish()
+            }.start()
             return
         }
-
-        setContentView(R.layout.activity_login)
 
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -64,11 +65,11 @@ class LoginActivity : AppCompatActivity() {
                 presenceDao.deleteAll()
 
                 val coursList = listOf(
-                    Cours(0, "Joel Dion", "Mathématiques", "01/01/2025", "8h-10h", "CM", "1A", "IR", "Mathématiques"),
-                    Cours(0, "Luc Bernard", "Informatique", "02/01/2025", "10h-12h", "TP", "1A", "IR", matiere = "Informatique"),
-                    Cours(0, "Julie Petit", "Physique", "03/01/2025", "13h-15h", "TD", "1A", "IR", matiere = "Physique"),
-                    Cours(0, "Jean Lemoine", "Chimie", "04/01/2025", "15h-17h", "CM", "2A", "IR", matiere = "Chimie"),
-                    Cours(0, "Sophie Marchand", "Biologie", "05/01/2025", "17h-19h", "CM", "3A", "IR", matiere = "Biologie")
+                    Cours(0, "Joel Dion", "Physique", "01/01/2025", "10h-12h", "TD", "1A", "IR", "Physique"),
+                    Cours(0, "Joel Dion", "Informatique", "01/01/2025", "14h-16h", "TP", "1A", "IR", "Informatique"),
+                    Cours(0, "Julie Petit", "Physique", "03/01/2025", "13h-15h", "TD", "1A", "IR", "Physique"),
+                    Cours(0, "Jean Lemoine", "Chimie", "04/01/2025", "15h-17h", "CM", "2A", "IR", "Chimie"),
+                    Cours(0, "Sophie Marchand", "Biologie", "05/01/2025", "17h-19h", "CM", "3A", "IR", "Biologie")
                 )
                 coursList.forEach { coursDao.insert(it) }
 
@@ -90,19 +91,21 @@ class LoginActivity : AppCompatActivity() {
                 val amine = users.first { it.name == "Amine Martin" }
                 val coursAmine = allCours.filter { it.annee == "1A" && it.spe == "IR" }
 
-                val presenceList = listOfNotNull(
-                    coursAmine.find { it.prof == "Joel Dion" }?.let { Presence(0, amine.id, it.id, false, null, false) },
-                    coursAmine.find { it.prof == "Luc Bernard" }?.let { Presence(0, amine.id, it.id, false, null, false) },
-                    coursAmine.find { it.prof == "Julie Petit" }?.let { Presence(0, amine.id, it.id, true, "justificatif.pdf", false) }
-                )
+                val presenceList = coursAmine
+                    .filter { it.prof == "Joel Dion" }
+                    .map { Presence(0, amine.id, it.id, false, null, false) }
+
                 presenceList.forEach { presenceDao.insert(it) }
 
-                val joelCourse = allCours.first { it.prof == "Joel Dion" && it.annee == "1A" && it.spe == "IR" }
+                val joelCourses = allCours.filter { it.prof == "Joel Dion" && it.annee == "1A" && it.spe == "IR" }
                 val firstYearStudents = users.filter { it.status == Status.STUDENT && it.annee == "1A" && it.spe == "IR" }
 
                 firstYearStudents.forEach { student ->
-                    if (presenceDao.getAll().none { it.userId == student.id && it.coursId == joelCourse.id }) {
-                        presenceDao.insert(Presence(0, student.id, joelCourse.id, false, null, true))
+                    joelCourses.forEach { course ->
+                        val alreadyExists = presenceDao.getAll().any { it.userId == student.id && it.coursId == course.id }
+                        if (!alreadyExists) {
+                            presenceDao.insert(Presence(0, student.id, course.id, false, null, true))
+                        }
                     }
                 }
             }
@@ -127,7 +130,7 @@ class LoginActivity : AppCompatActivity() {
                                 putExtra("user_id", user.id)
                             }
                             Status.ADMIN -> Intent(this, AdminActivity::class.java).apply {
-                                putExtra("user_id", savedUserId)
+                                putExtra("user_id", user.id)
                             }
                         }
                         startActivity(intent)
