@@ -4,11 +4,12 @@ import android.content.Context
 import com.jcraft.jsch.*
 import java.io.File
 import java.io.FileOutputStream
+import java.io.InputStream
 
 class SftpConnection {
 
     companion object {
-        private const val host: String = "10.74.252.198"
+        private const val host: String = "10.74.251.68"
         private const val port: Int = 22
         private const val username: String = "groupe1"
         private const val password: String = "Euler314"
@@ -197,6 +198,81 @@ class SftpConnection {
                     e.printStackTrace()
                     android.os.Handler(android.os.Looper.getMainLooper()).post {
                         onResult(false, "Erreur upload : ${e.message}")
+                    }
+                }
+            }.start()
+        }
+
+        fun uploadFileViaSFTPwithFile(
+            file : File,
+            remoteDestinationPath: String,
+            onResult: (Boolean, String) -> Unit
+        ) {
+            Thread {
+                try {
+                    // Vérifie que le fichier local existe
+                    val file = file
+                    if (!file.exists()) {
+                        android.os.Handler(android.os.Looper.getMainLooper()).post {
+                            onResult(false, "Fichier introuvable : ${file.absolutePath}")
+                        }
+                        return@Thread
+                    }
+
+                    // Connexion SSH via JSch
+                    val jsch = JSch()
+                    val session = jsch.getSession(username, host, port)
+                    session.setPassword(password)
+
+                    val config = java.util.Properties()
+                    config["StrictHostKeyChecking"] = "no"
+                    session.setConfig(config)
+
+                    session.connect(10000) // 10 secondes de timeout
+
+                    if (!session.isConnected) {
+                        android.os.Handler(android.os.Looper.getMainLooper()).post {
+                            onResult(false, "Session SSH non connectée.")
+                        }
+                        return@Thread
+                    }
+
+                    // Ouverture du canal SFTP
+                    val channel = session.openChannel("sftp") as? ChannelSftp
+                    if (channel == null) {
+                        session.disconnect()
+                        android.os.Handler(android.os.Looper.getMainLooper()).post {
+                            onResult(false, "Échec de l'ouverture du canal SFTP.")
+                        }
+                        return@Thread
+                    }
+
+                    channel.connect(5000)
+
+                    if (!channel.isConnected) {
+                        session.disconnect()
+                        android.os.Handler(android.os.Looper.getMainLooper()).post {
+                            onResult(false, "Canal SFTP non connecté.")
+                        }
+                        return@Thread
+                    }
+
+                    // Upload du fichier
+                    channel.put(file.absolutePath, remoteDestinationPath)
+
+                    // Fermeture
+                    channel.disconnect()
+                    session.disconnect()
+
+                    // Succès
+                    android.os.Handler(android.os.Looper.getMainLooper()).post {
+                        onResult(true, "Fichier uploadé avec succès vers : $remoteDestinationPath")
+                    }
+
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    android.os.Handler(android.os.Looper.getMainLooper()).post {
+                        onResult(false, "Erreur upload tara : ${e.message}")
                     }
                 }
             }.start()
