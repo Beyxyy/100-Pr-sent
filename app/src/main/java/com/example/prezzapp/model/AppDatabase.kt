@@ -32,26 +32,35 @@ abstract class AppDatabase : RoomDatabase() {
         private const val SHM_SUFFIX = "-shm"
 
         fun getDatabase(context: Context): AppDatabase {
+            Log.d("RoomDB", "Entering getDatabase method.")
             return INSTANCE ?: synchronized(this) {
+                Log.d("RoomDB", "Inside synchronized block. INSTANCE is null, building new database.")
+
+                val dbPath = context.getDatabasePath(DB_NAME).path // Get the database path
+                Log.d("RoomDB", "Attempting to build database at path: $dbPath") // Log the path
+
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     AppDatabase::class.java,
                     DB_NAME
-                ).openHelperFactory(androidx.sqlite.db.framework.FrameworkSQLiteOpenHelperFactory()) // Force l'ouverture de la base
+                ) // Force l'ouverture de la base
                     .addCallback(object : RoomDatabase.Callback() {
                         override fun onCreate(db: SupportSQLiteDatabase) {
                             super.onCreate(db)
-                            Log.d("RoomDB", "Base de données créée !")
+                            Log.d("RoomDB", "Database created for the first time!")
+                            Log.d("RoomDB", "Database file path: ${dbPath}") // Log on creation as well
                         }
 
                         override fun onOpen(db: SupportSQLiteDatabase) {
                             super.onOpen(db)
-                            Log.d("RoomDB", "Base de données ouverte.")
+                            Log.d("RoomDB", "Database opened and ready to use.")
+                            Log.d("RoomDB", "Database file path: ${dbPath}") // Log on open
                         }
                     })
-                    .allowMainThreadQueries() // à éviter en prod, mais utile ici // Charge la base de données existante
+                    .allowMainThreadQueries()
                     .build()
                 INSTANCE = instance
+                Log.d("RoomDB", "Database instance built and assigned.")
                 instance
             }
         }
@@ -174,4 +183,5 @@ abstract class AppDatabase : RoomDatabase() {
             }
         }
     }
+
 }

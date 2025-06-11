@@ -42,10 +42,12 @@ class MainActivity : ComponentActivity() {
             }
         }
         Thread {
+
             val sftpConnection: SftpConnection = SftpConnection.getInstance()
             sftpConnection.testSSHConnection { success, message ->
                 if (success) {
                     Log.d("SSH", "Connection successful: $message")
+
                     sftpConnection.importDatabaseFromServer(this)
                     AppDatabase.getDatabase(this)
                 } else {
@@ -54,7 +56,6 @@ class MainActivity : ComponentActivity() {
             }
 
         }.start()
-
 /*
 
         val userDao = db.userDao()x
