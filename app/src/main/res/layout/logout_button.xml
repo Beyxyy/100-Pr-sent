@@ -6,9 +6,9 @@
         android:id="@+id/btnLogout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Déconnexion"
+        android:text="Quitter"
         android:textColor="@color/white"
-        android:backgroundTint="@color/green_logo"
+        android:backgroundTint="@color/orange_not_justified"
         android:padding="12dp"
         android:layout_margin="16dp"
         />

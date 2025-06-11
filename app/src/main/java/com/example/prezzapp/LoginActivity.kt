@@ -79,7 +79,7 @@ class LoginActivity : AppCompatActivity() {
                     User(102, "jean.lemoine@uha.fr", "Jean Lemoine", "azerty2", "", "", "", "", Status.TEACHER),
                     User(103, "luc.bernard@uha.fr", "Luc Bernard", "azerty3", "", "", "", "", Status.TEACHER),
                     User(104, "sophie.marchand@uha.fr", "Sophie Marchand", "azerty4", "", "", "", "", Status.TEACHER),
-                    User(105, "julie.petit@uha.fr", "Julie Petit", "azerty5", "", "", "", "", Status.TEACHER),
+                    User(105, "julie.petit@uha.fr", "Julie Petit", "azerty5", "", "", "", "", Status.ADMIN),
                     User(1, "amine.martin@uha.fr", "Amine Martin", "pass01", "TD2", "TP3", "1A", "IR", Status.STUDENT),
                     User(2, "lina.nguyen@uha.fr", "Lina Nguyen", "pass02", "TD2", "TP3", "2A", "IR", Status.STUDENT),
                     User(3, "youssef.diallo@uha.fr", "Youssef Diallo", "pass03", "TD2", "TP2", "1A", "IR", Status.STUDENT),
